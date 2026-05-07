@@ -1,6 +1,6 @@
 ---
 session: 1
-dev: eric
+dev: spink
 slug: init-crewbook-seed-qkyvk
 branch: claude/init-crewbook-seed-QKyVk
 started: 2026-05-07T02:43:30Z
