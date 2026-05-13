@@ -75,15 +75,16 @@ Slash commands manage session lifecycle. Time tracking is automatic.
 
 ### /its-alive — Session Start
 
-**Purpose:** Stamps start time, reads last session context, recommends next task.
+**Purpose:** Stamps start time, opens a per-session file, captures the JSONL transcript path, reads last session context, recommends next task.
 
 **What it does:**
-1. Runs `date` to get current time
-2. Appends new open entry to top of `session-log.md`
-3. Reads last completed session's Next Steps / In Progress / Blocked / Context
-4. Reads PROJECT_PLAN.md for current phase and task state
-5. Presents briefing with recommended task
-6. Waits for confirmation before proceeding
+1. Resolves the working branch (handles `task/*`, `claude/*`, `main` with pull, etc.)
+2. Scans for orphan `claude/*` branches or unmerged PRs from prior sessions
+3. Stamps `START_UTC` and opens a new file under `sessions/YYYY-MM-DD-HHMM-<dev>-<slug>.md`
+4. Captures the active JSONL transcript path into the file's frontmatter
+5. Reads the most recent closed session for context (Next Steps / In Progress / Blocked)
+6. Reads PROJECT_PLAN.md for current phase and task state
+7. Presents briefing with recommended task — waits for confirmation
 
 **Spec:** `.claude/skills/its-alive/SKILL.md`
 
@@ -96,7 +97,7 @@ Slash commands manage session lifecycle. Time tracking is automatic.
 **What it does:**
 1. Runs `npm run build` — fixes errors before pausing
 2. Commits WIP with descriptive message
-3. Notes pause point in session-log.md (but doesn't close the entry)
+3. Notes pause point in the open per-session file (status stays `open`)
 
 **Spec:** `.claude/skills/pause-this/SKILL.md`
 
@@ -107,9 +108,9 @@ Slash commands manage session lifecycle. Time tracking is automatic.
 **Purpose:** Reload context after a mid-session break.
 
 **What it does:**
-1. Reads the pause note from session-log.md
-2. Reloads context from session-log.md and PROJECT_PLAN.md
-3. No new session number, no new timestamp — resuming same session
+1. Reads the pause note from the open per-session file
+2. Reloads context from that file + PROJECT_PLAN.md
+3. No new session number, no new timestamp — resuming the same session
 
 **Spec:** `.claude/skills/restart-this/SKILL.md`
 
@@ -132,16 +133,18 @@ Slash commands manage session lifecycle. Time tracking is automatic.
 
 ### /its-dead — End Session (Part 2: Finalize)
 
-**Purpose:** Second half of shutdown. Writes log, updates plan, pushes, runs PM.
+**Purpose:** Second half of shutdown. Finalizes the session file, pushes onto the PR branch (PR auto-updates), runs PM. User merges the PR afterward.
 
 **What it does:**
-1. Calculates session duration from start timestamp + most recent commit time
-2. Applies any time adjustments from args
+1. Calculates session duration from `START_UTC` (frontmatter) + most recent commit time
+2. Applies any time adjustments from args (e.g. "subtract 30 minutes for lunch")
 3. Tallies effort points for completed tasks
-4. Writes approved session entry to `session-log.md`
+4. Writes the approved body into the open per-session file and flips `status: open` → `status: closed`
 5. Marks completed tasks in PROJECT_PLAN.md with `[x]` and date
-6. Commits log + plan changes and pushes to remote
-7. Runs @pm for status assessment and next task recommendation
+6. Commits session-finalize + plan changes and pushes to the PR branch — PR auto-updates
+7. Patch-bumps `package.json` version on dev projects (DEC-007)
+8. Runs @pm for status assessment and next task recommendation
+9. Reports complete — user merges with `gh pr merge <N> --merge --delete-branch`
 
 **Spec:** `.claude/skills/its-dead/SKILL.md`
 
@@ -181,11 +184,14 @@ Slash commands manage session lifecycle. Time tracking is automatic.
 | /pause-this | — | Mid-session break | Safe pause with commit |
 | /restart-this | — | Resume from pause | Reload context |
 | /kill-this | — | Session end (part 1) | Draft session file body |
-| /its-dead | — | Session end (part 2) | Finalize session file + push |
+| /its-dead | — | Session end (part 2) | Finalize session file + push to PR branch (user merges after) |
 | /start-phase | — | Phase boundary (start) | Materialize phase as Issues |
 | /retro | — | Phase boundary (end) | Close out phase, write retro, bump minor version |
 | /bump-major | — | Breaking change | Manual major version bump |
 | /promote-staging | — | Ship staging to prod | ff-merge `staging` → `main`, tag, push |
+| /push-seeds | — | After workflow improvements | Backport project-side improvements to seeds via @sync-config |
+| /pull-seeds | — | After seeds gets new improvements | Pull template changes into this project (schema-version gated) |
+| /read-the-tape | — | After a session worth learning from | Audit session JSONL for anti-patterns; propose skill improvements |
 
 **Per-session files:** the workflow uses `sessions/YYYY-MM-DD-HHMM-<dev>-<slug>.md` (one file per session) instead of a single monolithic `session-log.md`. `<dev>` comes from `~/.claude/devname` (one-line file, falls back to `$USER`). The slug is derived from the branch name (`task/X-foo` → `X-foo`, `main` → `main`, etc.). The active JSONL transcript path is captured in the file's frontmatter for later `/read-the-tape` audits.
 
