@@ -9,13 +9,17 @@ BrewBoat is a crew-scheduling tool for a small brewery-boat operation: admins ge
 
 ## Active Theme
 
-**Fill in your shadcn theme details:**
-- Preset: [e.g., b7CSfQ4Xo]
-- Font: [e.g., Nunito Sans]
-- Base: [e.g., Mist]
-- Accent: [e.g., Sky]
-- Border radius: [e.g., xs]
-- Default mode: [e.g., Dark]
+**TBD — picked in Phase 0.1 (shadcn scaffolding task) per BRAND.md.**
+
+Locked so far:
+- Font: Geist Sans
+- Border radius: `rounded-lg` (md)
+- Default mode: Light
+
+To fill once Phase 0.1 lands:
+- Preset:
+- Base:
+- Accent:
 
 ---
 

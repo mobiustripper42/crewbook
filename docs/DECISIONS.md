@@ -32,6 +32,39 @@ Decisions are numbered. Two namespaces:
 **Decision:** shadcn/ui on top of Tailwind CSS.
 **Why:** Components are copied into the repo (not a dependency) — fully customizable. Covers forms, tables, dialogs. Claude Code knows it well.
 
+### DEC-005: Branch model — task/* branches + PR flow
+**Decision:** All work happens on `task/*` (or platform-cut `claude/*`) branches. `/its-alive` starts on the working branch, `/kill-this` opens a PR, `/its-dead` finalizes the session log on the same branch, then the user merges with `gh pr merge <N> --merge --delete-branch`. No commits land directly on `main`.
+**Why:** PR merge is the natural forcing function — work isn't done until the PR merges, which guarantees push state. Branch protection on `main` enforces it. The CC platform's auto-cut `claude/<slug>` branches mean PR-flow is already the default in this environment.
+**Tradeoff:** Slightly more ceremony per task. Worth it for the push guarantee and consistency.
+**Note:** The prior "always on main while solo" convention is scoped to unprotected working branches only.
+
+### DEC-007: Project semver — `package.json` + git tag, three triggers
+**Decision:** SemVer (`MAJOR.MINOR.PATCH`) lives in `package.json` and mirrors to a git tag (`vX.Y.Z`) on `main`. Three triggers move it:
+- **Patch:** `/its-dead` on every PR merge. CHANGELOG entry derived from PR title.
+- **Minor:** `/retro` on phase close. CHANGELOG entry summarizes the phase.
+- **Major:** manual `/bump-major`. User supplies the rationale.
+
+Tags only ever apply on `main`. In staging-flow projects (DEC-008), bumps on `staging` are untagged; the tag lands when `/promote-staging` ff-merges to `main`.
+**Detection:** presence of `package.json` at the repo root. Repos without it (template/markdown-only projects) no-op silently.
+**Bump tool:** `npm version <patch|minor|major> --no-git-tag-version` mutates `package.json` in place — the flag is critical because we control tagging ourselves so each release gets exactly one tag.
+**`<VersionTag />` template:** `dev/claude/templates/VersionTag.tsx` in seeds reads `process.env.NEXT_PUBLIC_APP_VERSION` + `process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA` at build time and renders `v1.2.3 (a1b2c3)`. The `NEXT_PUBLIC_` prefix is required for client-bundle inlining. Wired into login screen + footer per project.
+**Why:** Vercel-displayed version on the login screen is the highest-priority surface — without it, "what's deployed?" is unanswerable. Tying patch to PR merges and minor to phase close means version movement matches work cadence with no extra ceremony.
+
+### DEC-008: Staging promotion via ff-merge, not PR
+**Decision:** When a project has a `staging` branch, `/kill-this` PRs into `staging` (not `main`). Promotion to `main` happens via `/promote-staging` — fast-forward-merges `staging` into `main`, tags the release with the version currently in `package.json`, and pushes both branches plus the tag. No PR opens for the staging→main step.
+**Detection:** `git show-ref --verify --quiet refs/remotes/origin/staging` returns 0. Adopting staging mid-project: cut `staging` from `main` and push — all skills detect automatically.
+**Why:** Solo dev — there's no second reviewer for the staging→main promotion, so a PR adds ceremony without signal. The work was already reviewed when each task PR landed in `staging`. Fast-forward keeps history linear.
+**Tradeoff:** No GitHub UI moment to inspect the promotion before it ships. The Vercel deploy hook on `main` is still the deploy moment.
+
+### DEC-009: Supabase prod-write guard — discipline + wrapper script
+**Decision:** Two-layer defense against destructive Supabase CLI ops landing on production:
+- **Discipline:** never `supabase link` to a prod project ref from a dev box. Production reads its `SUPABASE_URL` + service-role key from Vercel env vars; there is no reason for a local link to prod.
+- **Wrapper script:** `scripts/safe-supabase.sh` reads the linked ref from `supabase/.temp/project-ref` and a per-project prod-ref allowlist from `.claude/prod-supabase-refs` (gitignored). For destructive subcommands, if the linked ref is in the prod list, it refuses the operation. Pass-through for everything else. The matcher walks adjacent argument pairs so leading global flags don't shift the destructive subcommand out of view.
+
+Guards (extend as new destructive forms surface): `db reset`, `db push`, `db remote *`, `migration up`, `migration repair`.
+**Bypass surfaces (by design):** `--db-url postgres://...prod...` flags, direct `psql` against the prod URL, any tool not going through the `supabase` binary. The wrapper closes the CLI-link gap; discipline covers the rest. Alias `supabase='./scripts/safe-supabase.sh'` makes protection transparent.
+**Setup:** copy script to `scripts/`, `chmod +x`, create `.claude/prod-supabase-refs` (one ref per line, gitignored).
+
 ---
 
 ## Product Decisions (BrewBoat)
@@ -89,10 +122,3 @@ These are recorded compactly per the project plan (April 12, 2026 planning poker
 ### DEC-112: Write-back is gravy
 **Decision:** Schedule board works without Xola write-back; admin can copy assignments by hand if write-back fails or is delayed.
 **Status:** Decided 2026-04-12.
-
----
-
-## DEC-TBD: [Decision placeholder]
-**Question:** [What needs to be decided]
-**Options:** [Option A vs Option B]
-**Consult @architect before building.**

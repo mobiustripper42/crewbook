@@ -27,14 +27,17 @@ Repo, stack, Supabase project, deploy pipeline, Xola dev account. No custom code
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | | Merged — same pattern as Sailbook |
-| 0.3 | Create Supabase project, apply initial schema | 2 | | Staff, shifts, assignments, scheduling_runs |
+| 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | | v0 drafts landed 2026-05-13 (Session 2). Edit for accuracy, fill TBDs, then re-run cross-doc consistency sweep. |
+| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | | Repo exists. Includes shadcn theme selection — update `.claude/agents/ui-reviewer.md` Active Theme block + `docs/BRAND.md` Style line. |
+| 0.3 | Create Supabase project, apply initial schema | 2 | | profiles, shifts, assignments, scheduling_runs |
 | 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | | Domain later if staff needs it |
-| 0.5 | Write CLAUDE.md, AGENTS.md, DECISIONS.md (seed) | 3 | | Port from Sailbook + adapt for Xola |
+| 0.5 | Write CLAUDE.md, AGENTS.md, DECISIONS.md (seed) | 3 | [x] | Done 2026-05-07 (Session 1). Port from Sailbook + adapt for Xola. |
 | 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | | **Start day one** — human approval has latency |
-| 0.7 | Playwright setup + test infrastructure | 3 | | Test coverage baked into task estimates going forward |
+| 0.7 | Playwright + axe-core + pgTAP test infrastructure | 3 | | Playwright for integration, axe-core for a11y (DEC-109 extended), pgTAP for RLS. Test coverage baked into task estimates going forward. |
 
-**Phase 0 total: 15 pts** → ~6 hrs at 0.40
+**Phase 0 total: 17 pts** → ~6.8 hrs at 0.40
+
+> Task ID 0.2 is unused — numbering jumps 0.1 → 0.3. Pre-existing gap from April 12 planning poker; left as-is to preserve historical references. Task 0.01 was added 2026-05-13 (intentionally numbered before 0.1 — runs before any code is scaffolded).
 
 ---
 
@@ -155,17 +158,17 @@ The stretch goal that becomes the real product. **Mobile-first, no desktop layou
 
 | Phase | Points | Est. Hours | Actual Hours | Hrs/Pt | Status |
 |-------|--------|------------|--------------|--------|--------|
-| 0 — Setup | 15 | 6.0 | — | — | Not started |
+| 0 — Setup | 17 | 6.8 | — | — | In progress (0.5 done) |
 | 1 — Xola Read | 28 | 11.2 | — | — | Not started |
 | 2 — Shift Agent | 21 | 8.4 | — | — | Not started |
 | 3 — Assignment | 27 | 10.8 | — | — | Not started |
 | 4 — Write-Back | 13 | 5.2 | — | — | Not started |
 | 5 — Self-Select | 31 | 12.4 | — | — | Not started |
 | 6 — Polish | 26 | 10.4 | — | — | Not started |
-| **Total** | **161** | **~64.4** | — | — | — |
+| **Total** | **163** | **~65.2** | — | — | — |
 
-**MVP (Phases 0–4): 104 pts, ~42 hrs**
-**Full (Phases 0–6): 161 pts, ~64 hrs**
+**MVP (Phases 0–4): 106 pts, ~42.8 hrs**
+**Full (Phases 0–6): 163 pts, ~65.2 hrs**
 At 2–3 productive hours/day: **MVP in ~2–3 weeks, full in ~4–5 weeks.**
 
 ---
@@ -194,6 +197,25 @@ Updated after each session. See velocity calculator artifact for projections.
 
 ---
 
+## Phase Boundary Checklist
+
+Run at the close of every phase, before `/retro`. Referenced from `AGENTS.md` and `RETROSPECTIVES.md`.
+
+- [ ] All phase tasks marked `[x]` in this file (with completion date)
+- [ ] All phase Issues closed on GitHub (`phase:N` label)
+- [ ] `npx playwright test` — full suite green at 375 / 768 / 1440 viewports
+- [ ] `supabase test db` — pgTAP RLS tests green (if any RLS work landed in the phase)
+- [ ] axe-core sweep on new pages — no Serious / Critical violations
+- [ ] Mobile screenshot pass at 375px on every new admin page (Phase 5 also at 414 / 390)
+- [ ] `@code-review` pass on phase output (full diff, not just last commit)
+- [ ] `@ui-reviewer` pass on phase output (if the phase shipped any UI)
+- [ ] DECISIONS.md updated — any new product DECs in the DEC-1NN range, any new workflow DECs in DEC-0NN
+- [ ] SPEC.md "Not V1" list still accurate — nothing in the phase silently expanded scope
+- [ ] `/retro` written — velocity computed, scope drift logged, next phase named
+- [ ] `package.json` minor version bumped (handled automatically by `/retro` per DEC-007)
+
+---
+
 ## Cuttable Tasks (if behind)
 
 In order of what hurts least to defer:
@@ -211,18 +233,20 @@ In order of what hurts least to defer:
 
 | ID | Decision | Status |
 |----|----------|--------|
-| DEC-001 | Supabase for DB (same as Sailbook) | Decided |
-| DEC-002 | Xola stays as booking system, we build on top | Decided |
-| DEC-003 | Anthropic API for agents (Claude Sonnet) | Decided |
-| DEC-004 | Magic links for staff auth (no passwords) | Decided |
-| DEC-005 | Fibonacci estimation scale (2, 3, 5, 8, 13) | Decided |
-| DEC-006 | MVP = Phases 0–4, staff self-select = Phase 5 | Decided |
-| DEC-007 | Three product types: brewboat (capt+mate), captained duffy (capt), duffy rental (shore staff) | Decided |
-| DEC-008 | Product name → type mapping is configurable lookup, not hardcoded | Decided |
-| DEC-009 | Playwright testing — setup in Phase 0, coverage baked into task estimates | Decided |
-| DEC-010 | Phase 5 is mobile-first only, no desktop layout | Decided |
-| DEC-011 | Xola App Store registration required — start day one, human approval has latency | Decided |
-| DEC-012 | Write-back is gravy — schedule board works without it, admin can enter by hand | Decided |
+| DEC-101 | Supabase for DB (same as Sailbook) | Decided |
+| DEC-102 | Xola stays as booking system, we build on top | Decided |
+| DEC-103 | Anthropic API for agents (Claude Sonnet) | Decided |
+| DEC-104 | Magic links for staff auth (no passwords) | Decided |
+| DEC-105 | Fibonacci estimation scale (2, 3, 5, 8, 13) | Decided |
+| DEC-106 | MVP = Phases 0–4, staff self-select = Phase 5 | Decided |
+| DEC-107 | Three product types: brewboat (capt+mate), captained duffy (capt), duffy rental (shore staff) | Decided |
+| DEC-108 | Product name → type mapping is configurable lookup, not hardcoded | Decided |
+| DEC-109 | Playwright testing — setup in Phase 0, coverage baked into task estimates | Decided |
+| DEC-110 | Phase 5 is mobile-first only, no desktop layout | Decided |
+| DEC-111 | Xola App Store registration required — start day one, human approval has latency | Decided |
+| DEC-112 | Write-back is gravy — schedule board works without it, admin can enter by hand | Decided |
+
+> Numbering uses the namespace established in DECISIONS.md — workflow DECs are DEC-001..099, product DECs are DEC-101..199. The DEC-001..012 numbers used in the April 12 2026 planning poker have been remapped to their DEC-1NN slots here.
 
 ---
 
