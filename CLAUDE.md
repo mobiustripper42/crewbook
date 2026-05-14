@@ -22,7 +22,7 @@ Multi-role staff exist (a captain who also works shore is common); roles are boo
 
 ## Key Docs
 | File | Purpose |
-|------|---------|
+|------|------|
 | `docs/SPEC.md` | What we're building — scope, V1 vs V2 vs V3 |
 | `docs/DECISIONS.md` | Why we made each architectural choice |
 | `docs/USER_STORIES.md` | What each role does |
@@ -32,6 +32,7 @@ Multi-role staff exist (a captain who also works shore is common); roles are boo
 | `docs/BRAND.md` | Philosophy, visual direction, voice |
 | `sessions/*.md` | Per-session files — `YYYY-MM-DD-HHMM-<dev>-<slug>.md` |
 | `.claude/seeds-version` | Schema version this project was last installed at. Used by `/pull-seeds` to gate template syncs. |
+| `.claude/project-type` | Project type — `webapp` or `tool`. Used by `@sync-config` to gate template files that don't apply to this project's type (DEC-011). Optional. |
 
 ## Core Data Model
 
@@ -72,7 +73,7 @@ Key relationships:
 7. **Mobile screenshot** — confirm 375px viewport passes
 8. **Open PR** — `/kill-this` commits, pushes branch, opens PR. Preview URL lands in the PR description.
 9. **Review & close** — tap the preview URL, address any `@code-review` findings, run full suite if RLS-touching, then `/its-dead` to finalize the session log. The session-log finalize commit lands on the same PR branch (auto-updates the PR).
-10. **Merge the PR** — once `/its-dead` reports complete, merge with `gh pr merge <N> --merge --delete-branch` or via the GitHub UI. **Do not merge between `/kill-this` and `/its-dead`** — that leaves the finalize commit orphaned.
+10. **Merge the PR** — once `/its-dead` reports complete, merge with `gh pr merge <N> --merge --delete-branch` or via the GitHub UI. **Do not merge between `/kill-this` and `/its-dead`** — that leaves the finalize commit orphaned (DEC-012).
 
 **No test, no push.**
 
@@ -228,13 +229,14 @@ npx supabase gen types typescript --local > src/lib/supabase/types.ts
 | `/pause-this` | Mid-session break | Build check, commit WIP, note pause |
 | `/restart-this` | Resume from pause | Reload context, continue same session |
 | `/kill-this` | Session end (part 1) | Build check, commit, push branch, open PR, code review, draft session body |
-| `/its-dead` | Session end (part 2) | Calc duration + points, finalize session file on PR branch, push. User merges PR afterward. |
+| `/its-dead` | Session end (part 2) | Calc time fields (wall_clock / dev_time / review_time) + points, finalize session file, branch cleanup. Merge the PR AFTER this runs. |
 | `/start-phase` | Phase boundary (start) | Materialize phase tasks from PROJECT_PLAN.md into Issues with phase:N + points:X labels |
 | `/retro` | Phase boundary (end) | Mark `[x]`, reconcile drift, compute phase velocity, write retro to RETROSPECTIVES.md, bump minor version |
 | `/bump-major` | Breaking change | Manually bump major version. CHANGELOG.md entry + tag (on main) or deferred tag (on staging). Dev projects only |
 | `/promote-staging` | Ship staging to prod | ff-merge `staging` → `main`, tag the release with current `package.json` version, push both. Staging-flow projects only |
 | `/push-seeds` | After workflow improvements | Backport project-side improvements to the seeds templates via @sync-config |
 | `/pull-seeds` | After seeds gets new improvements | Pull template changes into this project — schema-version-gated, applied via @sync-config |
+| `/read-the-tape` | After a session worth learning from | Audit JSONL transcript, find anti-patterns, propose skill improvements |
 
 **Dev identity:** `~/.claude/devname` (one-line file with your handle). Set once per machine.
 
@@ -243,7 +245,7 @@ npx supabase gen types typescript --local > src/lib/supabase/types.ts
 ## Agent Workflow
 
 | Agent | Model | When | Purpose |
-|-------|-------|------|---------|
+|-------|-------|------|------|
 | @architect | Opus | Before design decisions | Keep architecture coherent |
 | @code-review | Sonnet | After every commit (wired into `/kill-this`) | Catch issues early |
 | @pm | Sonnet | Start/end of sessions (via skills) | Track progress, flag risks |
