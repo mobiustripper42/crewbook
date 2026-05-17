@@ -30,7 +30,7 @@ Multi-role staff exist (a captain who also works shore is common); roles are boo
 | `docs/RETROSPECTIVES.md` | Phase-end retrospectives written by `/retro` |
 | `docs/AGENTS.md` | Agent and skill specs |
 | `docs/BRAND.md` | Philosophy, visual direction, voice |
-| `sessions/*.md` | Per-session files — `YYYY-MM-DD-HHMM-<dev>-<slug>.md` |
+| `sessions/*.md` (on orphan `sessions` branch via `.sessions-worktree/`) | Per-session files — `YYYY-MM-DD-HHMM-<dev>-<slug>.md`. Atomic after `/its-dead` closes (DEC-013); lives on the orphan `sessions` branch decoupled from any code branch (DEC-014). |
 | `.claude/seeds-version` | Schema version this project was last installed at. Used by `/pull-seeds` to gate template syncs. |
 | `.claude/project-type` | Project type — `webapp` or `tool`. Used by `@sync-config` to gate template files that don't apply to this project's type (DEC-011). Optional. |
 
@@ -62,18 +62,20 @@ Key relationships:
 
 `xola_*` tables are the local mirror — the source of truth is Xola, but we cache reads to avoid hammering the API and to support offline schedule editing.
 
-## Micro Workflow (every task, no exceptions)
+## Micro Workflow (per task, DEC-013 + DEC-014)
 
 1. **Spec it** — poker estimate, acceptance criteria
-2. **Plan it** — summarize what you're going to do (files to create/edit, approach). Wait for explicit approval before writing any code or running any commands.
-3. **Cut the branch** — once the plan is approved: `git checkout -b task/X.Y-short-description`. Branch name includes the task ID.
+2. **Plan it** — summarize files to create/edit + approach. Wait for explicit approval before writing code or running commands.
+3. **Cut the task branch** — once the plan is approved: `git checkout -b task/X.Y-short-description` (from the session anchor or main). One branch per task.
 4. **Build it** — implement the feature
 5. **Write the test** — Playwright integration test + pgTAP if RLS-touching
-6. **Run targeted tests** — `npx playwright test tests/foo.spec.ts --project=desktop` (and mobile if relevant). `supabase test db` if RLS-touching. Do NOT run the full suite — that's the user's call.
+6. **Run targeted tests** — `npx playwright test tests/foo.spec.ts --project=desktop`. `supabase test db` if RLS-touching. Do NOT run the full suite — that's the user's call.
 7. **Mobile screenshot** — confirm 375px viewport passes
-8. **Open PR** — `/kill-this` commits, pushes branch, opens PR. Preview URL lands in the PR description.
-9. **Review & close** — tap the preview URL, address any `@code-review` findings, run full suite if RLS-touching, then `/its-dead` to finalize the session log. The session-log finalize commit lands on the same PR branch (auto-updates the PR).
-10. **Merge the PR** — once `/its-dead` reports complete, merge with `gh pr merge <N> --merge --delete-branch` or via the GitHub UI. **Do not merge between `/kill-this` and `/its-dead`** — that leaves the finalize commit orphaned (DEC-012).
+8. **Ship the task** — `/kill-this`. Commits code on the task branch, opens PR, appends a `## Task <N>` block to the session file (on the orphan `sessions` branch via `.sessions-worktree/`).
+9. **Pick up another task** — start from step 1 again, with a new branch. `/its-alive` doesn't run again — same session.
+10. **Close the Claude window** — `/its-dead` once, at the end. Stamps `ended:`, displays wall_clock to screen for gut-check, closes the session file. No time math, no version bump (those run at `/retro`).
+11. **Merge PRs whenever** — order doesn't matter. PRs may merge mid-session, after `/its-dead`, or days later. Each merge deletes its task branch.
+12. **Phase boundary** — `/retro` reads each session's `started`/`ended`/transcript/PR-timestamps to compute per-session time. Aggregates phase velocity. Patches version per merged PR, minor-bumps at close.
 
 **No test, no push.**
 
@@ -225,13 +227,13 @@ npx supabase gen types typescript --local > src/lib/supabase/types.ts
 
 | Skill | When | What |
 |-------|------|------|
-| `/its-alive` | Session start | Stamp time, open per-session file, capture transcript path, read context, recommend task |
-| `/pause-this` | Mid-session break | Build check, commit WIP, note pause |
+| `/its-alive` | Session start | Stamp time, ensure `.sessions-worktree/` exists, open per-session file on orphan `sessions` branch, capture transcript, read context, recommend task |
+| `/pause-this` | Mid-session break | Build check, commit WIP on the task branch, note pause in session file (on sessions branch) |
 | `/restart-this` | Resume from pause | Reload context, continue same session |
-| `/kill-this` | Session end (part 1) | Build check, commit, push branch, open PR, code review, draft session body |
-| `/its-dead` | Session end (part 2) | Calc time fields (wall_clock / dev_time / review_time) + points, finalize session file, branch cleanup. Merge the PR AFTER this runs. |
+| `/kill-this` | **Per task** (DEC-013) | Build check, commit code on task branch, open PR, append `## Task <N>` block to session file. Multiple runs per session — one per task. No time math. |
+| `/its-dead` | Session end (once per window) | Stamp `ended:`, tally points, display wall_clock to screen, close session file. No time math, no version bump (those moved to `/retro`). Merge PRs whenever — order doesn't matter. |
 | `/start-phase` | Phase boundary (start) | Materialize phase tasks from PROJECT_PLAN.md into Issues with phase:N + points:X labels |
-| `/retro` | Phase boundary (end) | Mark `[x]`, reconcile drift, compute phase velocity, write retro to RETROSPECTIVES.md, bump minor version |
+| `/retro` | Phase boundary (end) | Compute per-session wall/dev/review from `started`/`ended`/transcript/PR-timestamps. Aggregate phase velocity. Mark `[x]`, reconcile drift, append to RETROSPECTIVES.md, patch-bump per merged PR + minor-bump at close (dev projects). |
 | `/bump-major` | Breaking change | Manually bump major version. CHANGELOG.md entry + tag (on main) or deferred tag (on staging). Dev projects only |
 | `/promote-staging` | Ship staging to prod | ff-merge `staging` → `main`, tag the release with current `package.json` version, push both. Staging-flow projects only |
 | `/push-seeds` | After workflow improvements | Backport project-side improvements to the seeds templates via @sync-config |
@@ -245,7 +247,7 @@ npx supabase gen types typescript --local > src/lib/supabase/types.ts
 ## Agent Workflow
 
 | Agent | Model | When | Purpose |
-|-------|-------|------|------|
+|-------|-------|------|-------|
 | @architect | Opus | Before design decisions | Keep architecture coherent |
 | @code-review | Sonnet | After every commit (wired into `/kill-this`) | Catch issues early |
 | @pm | Sonnet | Start/end of sessions (via skills) | Track progress, flag risks |
@@ -257,10 +259,13 @@ npx supabase gen types typescript --local > src/lib/supabase/types.ts
 - **Agents:** model is set in each agent's frontmatter. Don't override unless the task warrants it.
 - **New agents:** default to Sonnet. Add `model: opus` frontmatter only for architecture-level agents.
 
-## PR Workflow
+## PR Workflow (DEC-013 + DEC-014)
 
-- Each task gets a branch (`git checkout -b task/X.Y-short-description`).
-- `/kill-this` opens the PR. `/its-dead` finalizes the session log into the same PR branch (PR auto-updates). User merges with `gh pr merge <N> --merge --delete-branch` **after** `/its-dead` reports complete. Merging earlier leaves the finalize commit orphaned.
+- Each **task** gets a branch (`git checkout -b task/X.Y-short-description`). Multiple tasks per session is normal.
+- `/kill-this` runs **per task** — opens a PR for the current task branch and appends a `## Task <N>` block to the session file (on the orphan `sessions` branch). Run it as many times as you have tasks.
+- `/its-dead` runs **once per Claude window**, at the end. Stamps `ended:`, no other writes to file beyond closing it. No version bump.
+- Merge each PR whenever convenient — before next `/kill-this`, after `/its-dead`, days later. Order doesn't matter; `/retro` reads merge timestamps from GitHub.
+- The session file is **atomic** after `/its-dead` writes `status: closed`. No skill modifies it again. `/retro` reads but doesn't write.
 - Keep no more than 3 open PRs at once. Prefer 1.
 - Never have two open PRs with migrations touching the same table — merge one first.
 - Self-approve unless a stakeholder review is explicitly needed.
@@ -284,10 +289,12 @@ Adopting staging mid-project: cut `staging` from `main` (`git checkout -b stagin
 
 Every dev project carries a SemVer version in `package.json`, mirrored to a git tag (`vX.Y.Z`) on `main`.
 
-**Three triggers:**
-- **Patch:** `/its-dead` after every PR merge. CHANGELOG entry derived from PR title.
-- **Minor:** `/retro` at phase close. CHANGELOG entry summarizes the phase.
+**Three triggers (DEC-013 — all bumps run at `/retro`):**
+- **Patch:** `/retro` Step 8.2 — one bump + CHANGELOG entry per PR merged during the phase window. Title pulled from GitHub.
+- **Minor:** `/retro` Step 8.3 — bumped at phase close after all patches land. CHANGELOG entry summarizes the phase.
 - **Major:** `/bump-major` manual. User supplies the breaking-change rationale.
+
+Pre-DEC-013, patch bumps ran at `/its-dead` per merge. That kept session files non-atomic (each session's close-out depended on whether the PR had merged yet). Moving all bumps to retro keeps session files clean and concentrates versioning at the phase boundary where the changelog story is most coherent.
 
 **Tag rule:** tags are only ever applied on `main`. In staging-flow projects, bumps on `staging` are untagged; the tag lands when `/promote-staging` ff-merges to `main`.
 
