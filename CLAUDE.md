@@ -90,7 +90,7 @@ Key relationships:
 - Apply to remote: `supabase db push`
 - Never edit schema through the Supabase dashboard on any environment
 - `supabase/seed.sql` runs automatically on `db reset` — use for test data
-- After schema changes: regenerate types with `npx supabase gen types typescript --local > src/lib/supabase/types.ts`
+- After schema changes: regenerate types with `npx supabase gen types typescript --local > lib/supabase/types.ts`
 - **Before creating a migration:** run `gh pr list` to check for open PRs touching the same tables. If overlap exists, merge the in-flight PR first (or rename the new migration to a later timestamp to keep ledger order clean).
 
 ### Production write protection (DEC-009)
@@ -161,7 +161,7 @@ npx playwright test            # run integration tests
 npx playwright test --ui       # run with browser UI
 
 # Types
-npx supabase gen types typescript --local > src/lib/supabase/types.ts
+npx supabase gen types typescript --local > lib/supabase/types.ts
 ```
 
 ## Conventions
@@ -305,7 +305,7 @@ Pre-DEC-013, patch bumps ran at `/its-dead` per merge. That kept session files n
 Build-time version display, reads `process.env.NEXT_PUBLIC_APP_VERSION` + `process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA`. Renders e.g. `v1.2.3 (a1b2c3)`.
 
 Install:
-1. Copy `dev/claude/templates/VersionTag.tsx` from seeds to `src/components/VersionTag.tsx` (or wherever your component dir is).
+1. Copy `dev/claude/templates/VersionTag.tsx` from seeds to `components/VersionTag.tsx` (flat layout — no `src/`).
 2. **One-time Next.js setup:** in `next.config.js` (or `next.config.mjs`), forward the npm-set version into the client-inlinable namespace:
    ```js
    module.exports = {
