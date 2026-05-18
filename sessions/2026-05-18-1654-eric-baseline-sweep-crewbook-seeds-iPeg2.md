@@ -4,10 +4,10 @@ dev: eric
 slug: baseline-sweep-crewbook-seeds-iPeg2
 branch: claude/baseline-sweep-crewbook-seeds-iPeg2
 started: 2026-05-18T16:54:16Z
-ended:
-points:
+ended: 2026-05-18T17:26:06Z
+points: 3
 pr_numbers: [13]
-status: open
+status: closed
 transcript: /root/.claude/projects/-home-user/bc6bacab-9d03-46ac-ae65-3c0af14c0887.jsonl
 ---
 
