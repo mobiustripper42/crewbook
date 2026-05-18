@@ -27,13 +27,13 @@ Repo, stack, Supabase project, deploy pipeline, Xola dev account. No custom code
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | | v0 drafts landed 2026-05-13 (Session 2). Edit for accuracy, fill TBDs, then re-run cross-doc consistency sweep. |
-| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | | Repo exists. Includes shadcn theme selection — update `.claude/agents/ui-reviewer.md` Active Theme block + `docs/BRAND.md` Style line. |
-| 0.3 | Create Supabase project, apply initial schema | 2 | | profiles, shifts, assignments, scheduling_runs |
-| 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | | Domain later if staff needs it |
+| 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | [#7](https://github.com/mobiustripper42/crewbook/issues/7) | v0 drafts landed 2026-05-13 (Session 2). Edit for accuracy, fill TBDs, then re-run cross-doc consistency sweep. |
+| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | [#8](https://github.com/mobiustripper42/crewbook/issues/8) | Repo exists. Includes shadcn theme selection — update `.claude/agents/ui-reviewer.md` Active Theme block + `docs/BRAND.md` Style line. |
+| 0.3 | Create Supabase project, apply initial schema | 2 | [#9](https://github.com/mobiustripper42/crewbook/issues/9) | profiles, shifts, assignments, scheduling_runs |
+| 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | [#10](https://github.com/mobiustripper42/crewbook/issues/10) | Domain later if staff needs it |
 | 0.5 | Write CLAUDE.md, AGENTS.md, DECISIONS.md (seed) | 3 | [x] | Done 2026-05-07 (Session 1). Port from Sailbook + adapt for Xola. |
-| 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | | **Start day one** — human approval has latency |
-| 0.7 | Playwright + axe-core + pgTAP test infrastructure | 3 | | Playwright for integration, axe-core for a11y (DEC-109 extended), pgTAP for RLS. Test coverage baked into task estimates going forward. |
+| 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | [#11](https://github.com/mobiustripper42/crewbook/issues/11) | **Start day one** — human approval has latency |
+| 0.7 | Playwright + axe-core + pgTAP test infrastructure | 3 | [#12](https://github.com/mobiustripper42/crewbook/issues/12) | Playwright for integration, axe-core for a11y (DEC-109 extended), pgTAP for RLS. Test coverage baked into task estimates going forward. |
 
 **Phase 0 total: 17 pts** → ~6.8 hrs at 0.40
 
