@@ -9,17 +9,17 @@ BrewBoat is a crew-scheduling tool for a small brewery-boat operation: admins ge
 
 ## Active Theme
 
-**TBD — picked in Phase 0.1 (shadcn scaffolding task) per BRAND.md.**
+Picked Phase 0.1 (PR for task 0.1) via tweakcn preset `b7CSfQ4Xo`.
 
-Locked so far:
-- Font: Geist Sans
-- Border radius: `rounded-lg` (md)
-- Default mode: Light
-
-To fill once Phase 0.1 lands:
-- Preset:
-- Base:
-- Accent:
+- **Preset (shadcn `style`):** `base-mira`
+- **Base color (shadcn `baseColor`):** `mist` — cool light-gray with a faint blue undertone
+- **Primary:** `oklch(0.5 0.134 242)` — saturated sky-blue
+- **Primitives library:** Base UI (`@base-ui/react`), not Radix (`--base base` selected at init)
+- **Font:** Raleway (sans/body + heading), Geist Mono (mono), both via `next/font/google`
+- **Border radius:** `--radius: 0.625rem` (shadcn `--radius-lg` = `var(--radius)`; Tailwind `rounded-lg` resolves here)
+- **Default mode:** `system` (`next-themes` with `attribute="class"`, `enableSystem`, `defaultTheme="system"`); `d` key toggles
+- **Dark mode:** active — both Light and Dark token sets defined in `app/globals.css`
+- **Chart palette:** monochromatic gray fade (`chart-1` → `chart-5`, `oklch(0.872..0.275)` at hue ~213–219). Reserved for the schedule-board status colors; treat as a fallback palette for any data viz.
 
 ---
 
