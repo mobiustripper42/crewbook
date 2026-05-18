@@ -14,7 +14,7 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:push": "./scripts/safe-supabase.sh db push",
-    "db:types": "supabase gen types typescript --local > lib/supabase/types.ts",
+    "db:types": "mkdir -p lib/supabase && supabase gen types typescript --local > lib/supabase/types.ts",
     "db:test": "supabase test db"
   },
   "dependencies": {

@@ -10,12 +10,13 @@
 -- Phase 5.1 will add a policy letting staff UPDATE their own assignments
 -- (claim a shift); that's required regardless of the initial posture.
 
--- Helper: stable, security-definer check for the current user's admin flag.
+-- Helper: stable check for the current user's admin flag.
 -- Used in every admin-gated policy below so the EXISTS subquery isn't repeated.
+-- Runs under the caller's RLS context (not SECURITY DEFINER) — the calling role
+-- already has SELECT on profiles via the read policy, so no escalation needed.
 create or replace function public.is_admin()
 returns boolean
 language sql
-security definer
 stable
 set search_path = public
 as $$
