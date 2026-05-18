@@ -72,8 +72,11 @@ Guards (extend as new destructive forms surface): `db reset`, `db push`, `db rem
 These are recorded compactly per the project plan (April 12, 2026 planning poker). Expand individual entries with Why / Tradeoff / Revisit-if as the project surfaces non-obvious reasoning.
 
 ### DEC-101: Supabase for DB
-**Decision:** Same as Sailbook V1.
-**Status:** Decided 2026-04-12.
+**Decision:** Same as Sailbook V1. Postgres + Auth + RLS in one service.
+**Why:** Free tier (2 projects, 500 MB DB each, 50k MAU, 1-week inactivity pause) covers MVP + Season 1 at BrewBoat's scale (~12 staff, kilobyte data). Off-season pausing is desired behavior. Alternatives (Neon, Cloudflare D1, Vercel Postgres) don't bundle Auth/RLS and would force re-architecting DEC-001 ("no API server, RLS does authz"). Self-hosting on Hetzner saves nothing on free tier and adds ops burden against a fixed-date launch.
+**Cost path:** Free → Pro ($25/mo + $10/project) only when usage requires it or Drew is paying. Defer the upgrade decision to Phase 6.4 (production Xola cutover) or first paying customer, whichever comes first.
+**Status:** Decided 2026-04-12. Cost rationale + alternatives reviewed 2026-05-18 (architect, Session 4).
+**Revisit if:** DB approaches 500 MB, MAU approaches 50k, or in-season pausing becomes a problem (won't at weekly cadence).
 
 ### DEC-102: Xola stays as booking system, we build on top
 **Decision:** Reservations originate in Xola; BrewBoat reads from and writes back to Xola via API. Do not replace Xola.
@@ -85,9 +88,14 @@ These are recorded compactly per the project plan (April 12, 2026 planning poker
 **Status:** Decided 2026-04-12.
 
 ### DEC-104: Magic links for staff auth (no passwords)
-**Decision:** Resend-delivered magic links. Admin invites; crew clicks.
-**Status:** Decided 2026-04-12.
+**Decision:** Resend-delivered magic links via Supabase Auth `signInWithOtp({ email })`. Admin invites; crew clicks. Supabase default refresh-token lifetime (60 days, auto-rotating) means crew sees a magic-link email roughly once per off-season, not per login — in-season weekly use keeps the session warm indefinitely.
+**Why:** Same-day integration. Sets `auth.uid()` so RLS (DEC-001) works without app-layer authz threading. Magic-link expiry is the security model — no custom token rotation needed. All crew already has email (Xola requires it).
+**Considered alternatives:**
+- **Permanent per-staff URL tokens** (admin sends long-token URL, crew bookmarks). Rejected: bypasses `auth.uid()`, requires custom session handling that re-introduces the API-middleware pattern DEC-001 killed, shifts security from time-bounded tokens to manual rotation. Conceptually simpler, operationally worse.
+- **PIN-based login** (synthetic email + PIN as Supabase password, name dropdown + PIN field). Deferred 2026-05-18: motivation was "lower friction for crew" but the 60-day refresh-token behavior already delivers near-zero friction during a season. No problem found that PIN solves better than what magic links + session refresh already do. Revisit if crew reports friction after Season 1, or if a real lost-phone / shared-device threat surfaces.
+**Status:** Decided 2026-04-12. Alternatives considered + rejected 2026-05-18 (architect + user, Session 4).
 **See:** Phase 5.1 (PROJECT_PLAN.md).
+**Revisit if:** Drew reports crew friction with email magic-link flow after Season 1, *and* RLS-via-`auth.uid()` is no longer load-bearing.
 
 ### DEC-105: Fibonacci estimation scale
 **Decision:** 2, 3, 5, 8, 13. No 1s, avoid 13s.
@@ -122,3 +130,14 @@ These are recorded compactly per the project plan (April 12, 2026 planning poker
 ### DEC-112: Write-back is gravy
 **Decision:** Schedule board works without Xola write-back; admin can copy assignments by hand if write-back fails or is delayed.
 **Status:** Decided 2026-04-12.
+
+### DEC-113: Initial RLS posture — loose authenticated read, admin write
+**Decision:** For the Phase 0.3 initial migration, RLS policies are deliberately loose:
+- `profiles`, `shifts`, `assignments` — any authenticated user can `SELECT`; only admins (`profiles.is_admin = true`) can `INSERT` / `UPDATE` / `DELETE`.
+- `scheduling_runs` — admin only for all operations (read + write).
+
+RLS is `enabled` on every table per CLAUDE.md ("No table is accessible without explicit policy"), but the policies are coarse.
+**Why:** Low-stakes app: shifts and assignments are shared operational data — captains know who they're working with by design. The "worst case" of a read leak is crew seeing another crew's schedule, which is the same information already visible on the schedule board. Looser policies speed initial development (fewer RLS-403 errors during dev), reduce pgTAP test surface in Phase 0.7 (~3 simple tests vs ~8–10 per-row tests), and don't lock out tightening later. `scheduling_runs` stays admin-only because it holds agent prompt inputs/outputs (JSONB blobs) with no crew-facing purpose.
+**Tradeoff:** Phase 5.1 (staff self-select) will require an RLS update so staff can `UPDATE` their own row in `assignments` (claim a shift). That update is required regardless of the initial posture, so the loose baseline doesn't add work — it just defers one decision point.
+**Status:** Decided 2026-05-18 (Session 4, Task 0.3).
+**Revisit:** Phase 5.1 (staff self-select needs assignment write permission for `profile_id = auth.uid()`). Tighten profiles + assignments per-row reads if a real exposure surfaces — none expected at the BrewBoat threat model.
