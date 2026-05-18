@@ -36,7 +36,9 @@ Stage all uncommitted code changes on the **task branch** (the current `$BRANCH`
 
 ```
 git add -A
-git commit -m "<phase/task summary>\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+git commit -m "<phase/task summary>
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
 
 If there is nothing to commit, surface that and stop here — no PR for no code.
@@ -119,13 +121,16 @@ Use the **Edit** tool on `$SESSION_FILE` (the worktree path) to:
 1. Append the `## Task <TASK_NUM>:` block before the `**Next Steps:**` section near the bottom.
 2. Update the frontmatter `pr_numbers:` list to append `<PR_NUMBER>`. Example: `pr_numbers: [42, 43]`.
 
-Then commit + push from the worktree using `git -C` (no `cd` — shell state doesn't persist between Bash calls):
+Then commit + push using `git -C` to target the worktree directory (no `cd` — shell state doesn't persist between Bash calls, and a stray `cd` that fails leaves the next command running in the wrong tree):
 
 ```
 git -C .sessions-worktree add sessions/$(basename "$SESSION_FILE")
 git -C .sessions-worktree commit -m "Session <N> — log Task <TASK_NUM> (PR #<PR_NUMBER>)"
 git -C .sessions-worktree push origin sessions
+git -C .sessions-worktree checkout sessions 2>/dev/null || true
 ```
+
+The final `checkout sessions` re-pins the worktree HEAD to the `sessions` branch — guards against a detached-HEAD state if anything upstream rewrote history.
 
 The user's main checkout never moves; the task branch stays clean (no session-file pollution).
 
