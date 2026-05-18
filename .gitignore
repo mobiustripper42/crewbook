@@ -37,3 +37,10 @@ test-results/
 playwright-report/
 playwright/.cache/
 coverage/
+
+# Next.js / TypeScript build artifacts
+next-env.d.ts
+*.tsbuildinfo
+
+# Misc
+*.pem

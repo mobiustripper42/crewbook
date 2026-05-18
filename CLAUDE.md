@@ -12,7 +12,7 @@ Roles:
 Multi-role staff exist (a captain who also works shore is common); roles are boolean flags on `profiles`, not mutually exclusive (DEC-003).
 
 ## Stack
-- **Frontend:** Next.js 14+ (App Router), Tailwind CSS, shadcn/ui, Geist Sans
+- **Frontend:** Next.js 16 (App Router) + React 19, Tailwind CSS v4, shadcn/ui (Base UI primitives, `base-mira` preset, `mist` base), Raleway sans / Geist Mono via `next/font/google`. Light + Dark via `next-themes` (`defaultTheme="system"`, press `d` to toggle).
 - **Backend:** Supabase (PostgreSQL + Auth + Row Level Security) — no separate API server (DEC-001)
 - **Agents:** Anthropic Claude Sonnet via the official SDK — shift generation (Phase 2) and staff assignment (Phase 3)
 - **Booking integration:** Xola REST API — sandbox first, prod after validation. App Store registration required (DEC-111). See `Xola Integration` section below.

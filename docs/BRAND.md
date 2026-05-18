@@ -40,10 +40,10 @@ Practical with a dry sense of humor. Drew's voice, not a marketing team's. Occas
 
 ## Visual Direction
 
-- **Style:** TBD — shadcn theme picked in Phase 0.1 (`ui-reviewer.md` Active Theme block updated at the same time).
-- **Default mode:** Light. Boats run in daylight; staff use the app outdoors.
-- **Font:** Geist Sans (heading + body)
-- **Border radius:** `rounded-lg` (md). One radius, used everywhere. Never mix.
+- **Style:** shadcn `base-mira` preset with `mist` base color — cool light-gray with a faint blue undertone, blue primary at `oklch(0.5 0.134 242)`. Picked from tweakcn (preset ID `b7CSfQ4Xo`) in Phase 0.1.
+- **Default mode:** System (`next-themes` `defaultTheme="system"`). Light when the OS prefers light; dark when it prefers dark. Press `d` to toggle. Boats run in daylight, so most usage is Light — but staff phones may default to dark in low light.
+- **Font:** Raleway (heading + body), via `next/font/google`. Geist Mono for code/numbers.
+- **Border radius:** `rounded-lg` mapped to the shadcn `--radius` var at `0.625rem`. One radius, used everywhere. Never mix.
 - **Shadows:** Cards `shadow-sm`. Modals `shadow-lg`. Nothing else.
 - **Color approach:** Semantic shadcn tokens (`bg-background`, `bg-card`, etc.) — no hardcoded Tailwind color classes for surfaces or text. Amber for warnings is OK (UX signal, not brand color).
 - **Schedule-board status colors:** Approved / Pending / Unfilled / Conflict — small, distinct, paired with icon + text label (never color alone — accessibility baseline).
