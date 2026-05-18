@@ -30,6 +30,7 @@ supabase/.branches/
 # Claude / project-local
 .claude/settings.local.json
 .claude/prod-supabase-refs
+.sessions-worktree/
 
 # Test artifacts
 test-results/
