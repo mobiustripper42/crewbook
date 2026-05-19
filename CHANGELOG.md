@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.11] - 2026-05-19
+- PR #21: Phase 0.7 — test infra: Playwright + axe-core + pgTAP
+
 ## [0.0.10] - 2026-05-19
 - PR #19: Phase 0.6 — Xola sandbox: approval email draft + sandbox key ping script
 
