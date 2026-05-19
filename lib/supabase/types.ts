@@ -199,6 +199,30 @@ export type Database = {
         }
         Relationships: []
       }
+      xola_experiences: {
+        Row: {
+          description: string | null
+          id: string
+          name: string
+          raw: Json
+          synced_at: string
+        }
+        Insert: {
+          description?: string | null
+          id: string
+          name: string
+          raw: Json
+          synced_at?: string
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          name?: string
+          raw?: Json
+          synced_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
