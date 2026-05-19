@@ -21,7 +21,7 @@ The agent makes the first pass. The admin always has the final say.
 
 ## Stack
 
-- **Frontend:** Next.js 14+ (App Router), Tailwind CSS, shadcn/ui, Geist Sans
+- **Frontend:** Next.js 16 (App Router) + React 19, Tailwind CSS v4, shadcn/ui (Base UI primitives, `base-mira` preset, `mist` base), Raleway sans / Geist Mono via `next/font/google`. Light + Dark via `next-themes` (`defaultTheme="system"`).
 - **Backend:** Supabase (PostgreSQL + Auth + Row Level Security) — no separate API server (DEC-001)
 - **Agents:** Anthropic Claude Sonnet — shift generation (Phase 2) and staff assignment (Phase 3)
 - **Booking integration:** Xola REST API (DEC-102, DEC-111)

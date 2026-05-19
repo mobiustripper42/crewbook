@@ -40,9 +40,11 @@ Decisions are numbered. Two namespaces:
 
 ### DEC-007: Project semver — `package.json` + git tag, three triggers
 **Decision:** SemVer (`MAJOR.MINOR.PATCH`) lives in `package.json` and mirrors to a git tag (`vX.Y.Z`) on `main`. Three triggers move it:
-- **Patch:** `/its-dead` on every PR merge. CHANGELOG entry derived from PR title.
-- **Minor:** `/retro` on phase close. CHANGELOG entry summarizes the phase.
+- **Patch:** one bump + CHANGELOG entry per PR merged during the phase window. Title pulled from GitHub.
+- **Minor:** bumped at phase close after all patches land. CHANGELOG entry summarizes the phase.
 - **Major:** manual `/bump-major`. User supplies the rationale.
+
+**2026-05-18 amendment (DEC-013):** all three bumps now run at `/retro`, not at `/its-dead`. Pre-DEC-013 the patch bump ran on every PR merge from `/its-dead`, which kept session files non-atomic (close-out depended on whether the PR had merged yet). Moving all bumps to retro keeps session files clean and concentrates versioning at the phase boundary where the changelog story is most coherent.
 
 Tags only ever apply on `main`. In staging-flow projects (DEC-008), bumps on `staging` are untagged; the tag lands when `/promote-staging` ff-merges to `main`.
 **Detection:** presence of `package.json` at the repo root. Repos without it (template/markdown-only projects) no-op silently.
