@@ -19,6 +19,12 @@ BrewBoat has an external API dependency Sailbook didn't — expect implementatio
 
 **Working assumption:** 0.40 hrs/pt for planning. Adjust after Phase 1.
 
+### Actual velocity (filled at phase close by `/retro`)
+
+| Phase | Sessions | Points | Wall (h) | Dev (h) | Review (h) | hrs/pt (active) | Notes |
+|-------|----------|--------|----------|---------|------------|-----------------|-------|
+| 0     | 5        | 17     | 13.88    | 2.31    | 2.97        | 0.31            | Single-boundary model (concurrent-PR session inflated review_time under DEC-015 method). 25% under the 0.40 baseline — Phase 0 was self-contained setup work; Phase 1+ external integrations will run higher. |
+
 ---
 
 ## Phase 0: Project Setup
@@ -27,13 +33,13 @@ Repo, stack, Supabase project, deploy pipeline, Xola dev account. No custom code
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | [#7](https://github.com/mobiustripper42/crewbook/issues/7) | v0 drafts landed 2026-05-13 (Session 2). Edit for accuracy, fill TBDs, then re-run cross-doc consistency sweep. |
+| 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | [x] 2026-05-19 | Done [PR #17](https://github.com/mobiustripper42/crewbook/pull/17). v0 drafts landed 2026-05-13 (Session 2); accuracy + TBD fill + cross-doc consistency sweep landed in Session 5. |
 | 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | [x] 2026-05-18 | Done [PR #14](https://github.com/mobiustripper42/crewbook/pull/14). Locked stack: Next 16 + React 19, Tailwind v4, shadcn `base-mira`/`mist`, Raleway/Geist Mono. |
-| 0.3 | Create Supabase project, apply initial schema | 2 | [x] 2026-05-18 | Done [PR #15](https://github.com/mobiustripper42/crewbook/pull/15). 4 tables (profiles, shifts, assignments, scheduling_runs) + RLS baseline per DEC-113. |
-| 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | [#10](https://github.com/mobiustripper42/crewbook/issues/10) | Domain later if staff needs it |
+| 0.3 | Create Supabase project, apply initial schema | 2 | [x] 2026-05-18 | Done [PR #15](https://github.com/mobiustripper42/crewbook/pull/15) + types follow-up [PR #20](https://github.com/mobiustripper42/crewbook/pull/20). 4 tables (profiles, shifts, assignments, scheduling_runs) + RLS baseline per DEC-113. |
+| 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | [x] 2026-05-19 | Done [PR #18](https://github.com/mobiustripper42/crewbook/pull/18). VersionTag wired site-wide, `.env.example` scaffolded, DEC-113 prod-admin bootstrap added. |
 | 0.5 | Write CLAUDE.md, AGENTS.md, DECISIONS.md (seed) | 3 | [x] | Done 2026-05-07 (Session 1). Port from Sailbook + adapt for Xola. |
-| 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | [#11](https://github.com/mobiustripper42/crewbook/issues/11) | **Start day one** — human approval has latency |
-| 0.7 | Playwright + axe-core + pgTAP test infrastructure | 3 | [#12](https://github.com/mobiustripper42/crewbook/issues/12) | Playwright for integration, axe-core for a11y (DEC-109 extended), pgTAP for RLS. Test coverage baked into task estimates going forward. |
+| 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | [x] 2026-05-19 | Done [PR #19](https://github.com/mobiustripper42/crewbook/pull/19). Sandbox approval received mid-Session-6; `scripts/xola-ping.mjs` validated the key end-to-end (`X-API-Key` auth confirmed). |
+| 0.7 | Playwright + axe-core + pgTAP test infrastructure | 3 | [x] 2026-05-19 | Done [PR #21](https://github.com/mobiustripper42/crewbook/pull/21). Three viewport projects (375/768/1440), axe-core a11y smoke (Serious/Critical gate), pgTAP RLS smoke (9 assertions). CI integration deferred. |
 
 **Phase 0 total: 17 pts** → ~6.8 hrs at 0.40
 
