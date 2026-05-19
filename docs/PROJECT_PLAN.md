@@ -245,6 +245,7 @@ In order of what hurts least to defer:
 | DEC-110 | Phase 5 is mobile-first only, no desktop layout | Decided |
 | DEC-111 | Xola App Store registration required — start day one, human approval has latency | Decided |
 | DEC-112 | Write-back is gravy — schedule board works without it, admin can enter by hand | Decided |
+| DEC-113 | Initial RLS — loose authenticated read, admin write; scheduling_runs admin-only | Decided |
 
 > Numbering uses the namespace established in DECISIONS.md — workflow DECs are DEC-001..099, product DECs are DEC-101..199. The DEC-001..012 numbers used in the April 12 2026 planning poker have been remapped to their DEC-1NN slots here.
 
