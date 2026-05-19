@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.6] - 2026-05-19
+- PR #16: DEC-016 — split ui-reviewer: generic shell + .claude/ui-context.md
+
 ## [0.0.5] - 2026-05-19
 - PR #15: Phase 0.3 — Supabase initial schema + RLS baseline
 
