@@ -135,6 +135,33 @@ describe("syncExperiences", () => {
     };
     const res = await syncExperiences({ fetcher, writer });
     assert.equal(res.count, 0);
-    assert.equal(writerCalls, 1, "writer is still called (even with empty input)");
+    // syncExperiences always invokes the injected writer (it's the test
+    // seam — callers expect the call). defaultWriter has its own early-return
+    // on empty rows; that's a server-internal optimization, not part of the
+    // sync-function contract.
+    assert.equal(writerCalls, 1);
+  });
+
+  it("skips malformed rows missing id or name", async () => {
+    const fetcher = async <T>(): Promise<T> =>
+      ({
+        data: [
+          exp("ok-1", "Real Experience"),
+          { id: "", name: "no id" } as XolaExperience,
+          { id: "no-name" } as unknown as XolaExperience,
+          exp("ok-2", "Another"),
+        ],
+      }) as unknown as T;
+    let received: XolaExperience[] = [];
+    const writer = async (rows: XolaExperience[]) => {
+      received = rows;
+    };
+
+    const res = await syncExperiences({ fetcher, writer });
+    assert.equal(res.count, 2);
+    assert.deepEqual(
+      received.map((r) => r.id),
+      ["ok-1", "ok-2"],
+    );
   });
 });

@@ -22,8 +22,6 @@ create table public.xola_experiences (
   synced_at   timestamptz not null default now()
 );
 
-create index xola_experiences_synced_at_idx on public.xola_experiences(synced_at desc);
-
 alter table public.xola_experiences enable row level security;
 
 -- No policies yet. Service-role bypasses RLS; admin-readable policy lands

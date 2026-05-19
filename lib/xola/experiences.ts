@@ -70,9 +70,24 @@ export async function syncExperiences(
   options: { fetcher?: typeof xolaFetch; writer?: ExperienceWriter } = {},
 ): Promise<SyncResult> {
   const rows = await fetchAllExperiences({ fetcher: options.fetcher });
+  // Drop malformed rows before handing off — id + name are NOT NULL in the
+  // schema, and a missing id would corrupt upsert-by-id. Warn so a sandbox
+  // shape regression is visible in logs.
+  const valid: XolaExperience[] = [];
+  let skipped = 0;
+  for (const row of rows) {
+    if (typeof row?.id === "string" && row.id && typeof row?.name === "string" && row.name) {
+      valid.push(row);
+    } else {
+      skipped++;
+    }
+  }
+  if (skipped > 0) {
+    console.warn(`syncExperiences: skipped ${skipped} malformed row(s) (missing id/name)`);
+  }
   const writer = options.writer ?? defaultWriter;
-  await writer(rows);
-  return { count: rows.length };
+  await writer(valid);
+  return { count: valid.length };
 }
 
 async function defaultWriter(rows: XolaExperience[]): Promise<void> {
