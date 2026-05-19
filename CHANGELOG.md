@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.10] - 2026-05-19
+- PR #19: Phase 0.6 — Xola sandbox: approval email draft + sandbox key ping script
+
 ## [0.0.9] - 2026-05-19
 - PR #20: Phase 0.3 follow-up: commit generated Supabase types
 
