@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.5] - 2026-05-19
+- PR #15: Phase 0.3 — Supabase initial schema + RLS baseline
+
 ## [0.0.4] - 2026-05-19
 - PR #14: Phase 0.1 — Init Next.js 16 + Tailwind 4 + shadcn (base-mira/mist)
 
