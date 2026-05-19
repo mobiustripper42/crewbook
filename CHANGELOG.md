@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.4] - 2026-05-19
+- PR #14: Phase 0.1 — Init Next.js 16 + Tailwind 4 + shadcn (base-mira/mist)
+
 ## [0.0.3] - 2026-05-19
 - PR #13: Baseline sweep: DEC-014 migration + retro/SKILL.md (DEC-015) pull
 
