@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.8] - 2026-05-19
+- PR #18: Phase 0.4 — Vercel deploy prep: VersionTag + .env.example + prod-admin bootstrap
+
 ## [0.0.7] - 2026-05-19
 - PR #17: Phase 0.01 — doc review + cross-doc consistency sweep
 
