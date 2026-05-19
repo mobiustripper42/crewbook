@@ -15,7 +15,8 @@
     "db:reset": "supabase db reset",
     "db:push": "./scripts/safe-supabase.sh db push",
     "db:types": "mkdir -p lib/supabase && supabase gen types typescript --local > lib/supabase/types.ts",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "test:unit": "node --experimental-strip-types --test 'tests/unit/**/*.test.ts'"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
