@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.7] - 2026-05-19
+- PR #17: Phase 0.01 — doc review + cross-doc consistency sweep
+
 ## [0.0.6] - 2026-05-19
 - PR #16: DEC-016 — split ui-reviewer: generic shell + .claude/ui-context.md
 
