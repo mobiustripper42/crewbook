@@ -10,7 +10,7 @@ dev_time:
 review_time:
 duration:
 points:
-status: open
+status: abandoned
 pr_number:
 pr_url:
 pr_opened_at:
