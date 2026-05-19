@@ -28,8 +28,8 @@ Repo, stack, Supabase project, deploy pipeline, Xola dev account. No custom code
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
 | 0.01 | Review SPEC / USER_STORIES / BRAND drafts + redundancy check across docs | 2 | [#7](https://github.com/mobiustripper42/crewbook/issues/7) | v0 drafts landed 2026-05-13 (Session 2). Edit for accuracy, fill TBDs, then re-run cross-doc consistency sweep. |
-| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | [#8](https://github.com/mobiustripper42/crewbook/issues/8) | Repo exists. Includes shadcn theme selection — update `.claude/agents/ui-reviewer.md` Active Theme block + `docs/BRAND.md` Style line. |
-| 0.3 | Create Supabase project, apply initial schema | 2 | [#9](https://github.com/mobiustripper42/crewbook/issues/9) | profiles, shifts, assignments, scheduling_runs |
+| 0.1 | Create GitHub repo, init Next.js 14+ App Router, Tailwind + shadcn/ui + Geist | 3 | [x] 2026-05-18 | Done [PR #14](https://github.com/mobiustripper42/crewbook/pull/14). Locked stack: Next 16 + React 19, Tailwind v4, shadcn `base-mira`/`mist`, Raleway/Geist Mono. |
+| 0.3 | Create Supabase project, apply initial schema | 2 | [x] 2026-05-18 | Done [PR #15](https://github.com/mobiustripper42/crewbook/pull/15). 4 tables (profiles, shifts, assignments, scheduling_runs) + RLS baseline per DEC-113. |
 | 0.4 | Vercel deploy, env vars (no custom domain yet) | 2 | [#10](https://github.com/mobiustripper42/crewbook/issues/10) | Domain later if staff needs it |
 | 0.5 | Write CLAUDE.md, AGENTS.md, DECISIONS.md (seed) | 3 | [x] | Done 2026-05-07 (Session 1). Port from Sailbook + adapt for Xola. |
 | 0.6 | Xola sandbox: dev account, register app, request approval + seller account | 2 | [#11](https://github.com/mobiustripper42/crewbook/issues/11) | **Start day one** — human approval has latency |
@@ -158,7 +158,7 @@ The stretch goal that becomes the real product. **Mobile-first, no desktop layou
 
 | Phase | Points | Est. Hours | Actual Hours | Hrs/Pt | Status |
 |-------|--------|------------|--------------|--------|--------|
-| 0 — Setup | 17 | 6.8 | — | — | In progress (0.5 done) |
+| 0 — Setup | 17 | 6.8 | — | — | In progress (0.1, 0.3, 0.5 done) |
 | 1 — Xola Read | 28 | 11.2 | — | — | Not started |
 | 2 — Shift Agent | 21 | 8.4 | — | — | Not started |
 | 3 — Assignment | 27 | 10.8 | — | — | Not started |
