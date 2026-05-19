@@ -11,6 +11,7 @@
 // the published scheme is different.
 
 const HOST = "https://sandbox.xola.com";
+// limit=1 is best-effort — ignored if the endpoint doesn't accept it.
 const PATH = "/api/experiences?limit=1";
 
 const key = process.env.XOLA_API_KEY;
@@ -47,12 +48,21 @@ try {
 }
 
 if (!res.ok) {
+  if (res.status === 401 || res.status === 403) {
+    console.error(
+      "Auth failed. If the key is correct, try the other scheme: swap the\n" +
+        "`X-API-Key` header above for `Authorization: Bearer ${key}` and re-run.",
+    );
+  }
   console.error("Request failed. Response body:");
   console.error(body ?? text);
   process.exit(1);
 }
 
-const first = Array.isArray(body) ? body[0] : body?.data?.[0] ?? body?.experiences?.[0];
+const first =
+  Array.isArray(body)
+    ? body[0]
+    : body?.data?.[0] ?? body?.experiences?.[0] ?? body?.items?.[0];
 if (first) {
   const name = first.name ?? first.title ?? "(no name field on first experience)";
   console.log(`OK — first experience: ${name}`);

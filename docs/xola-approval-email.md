@@ -19,8 +19,9 @@ To finish that integration we'd like to request:
 A few details that may help:
 
 - **Single-tenant, internal-only.** This is a private tool for [Drew's] operation — not a public marketplace or multi-seller product.
-- **Endpoints we plan to use:** read — experiences, guides, orders (status 200–299), events; write — assign/remove guide on event, acknowledge.
+- **Endpoints we plan to use:** read — experiences, guides, orders (status 200–299), events; write — assign/remove guide on event, acknowledge (mark order as seen / processed).
 - **Write volume:** modest. We write back guide assignments once per week after admin review, plus mid-week adjustments. We expect well under the published rate limits.
+- **Data handling:** we mirror Xola orders + events into a private Supabase database to avoid hammering the API and to support offline schedule editing. Xola remains the source of truth — local copies are caches, refreshed on demand.
 - **App registration name:** [name you used in the App Store registration form].
 - **Primary technical contact:** eric@stoffer.net.
 - **Primary operational contact:** [Drew's email].
@@ -45,4 +46,4 @@ eric@stoffer.net
 
 - Sending from `eric@stoffer.net` is fine — keep Drew CC'd so the thread is visible on his side.
 - If they ask for more detail on volumes, the realistic numbers are: ~5–25 reservations/day in season; one full write-back per week (~10–40 assignment writes); occasional re-assignments mid-week. Well below typical API limits.
-- If they ask about data retention: we mirror Xola orders + events locally in Supabase to avoid hammering the API, but the source of truth stays in Xola.
+- Data-handling note now lives in the email body (fourth bullet) so it pre-answers the partnerships-team retention question.
