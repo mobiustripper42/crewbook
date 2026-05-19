@@ -1,4 +1,8 @@
 # Changelog
+## [0.1.0] - 2026-05-19 — Phase 0
+- 17 pts shipped across 5 sessions (0.31 hrs/pt active)
+- See `docs/RETROSPECTIVES.md` for the full retro
+
 ## [0.0.11] - 2026-05-19
 - PR #21: Phase 0.7 — test infra: Playwright + axe-core + pgTAP
 
