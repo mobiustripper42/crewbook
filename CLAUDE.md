@@ -207,7 +207,7 @@ npx supabase gen types typescript --local > lib/supabase/types.ts
 
 ### UI / Brand
 - Colors: white/black base, semantic tokens from shadcn. No color for color's sake.
-- Font: Geist Sans (or project font)
+- Font: Raleway (body) + Geist Mono (code), via `next/font/google`
 - shadcn/ui defaults. Override only when necessary.
 - One border radius: `rounded-lg`
 - Layout padding in layout.tsx only
