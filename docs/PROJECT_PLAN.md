@@ -53,14 +53,14 @@ Pull reservation data from Xola. Read-only. Use 2025 production data for validat
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 1.1 | Xola API client module (auth, base HTTP, error handling, retry) | 5 | | First external API in the stack — budget for auth quirks |
-| 1.2 | Pull experiences (list all, cache locally) | 2 | | One GET, store results |
-| 1.3 | Pull guides (list all crew in Xola) | 2 | | One GET, store results |
-| 1.4 | Pull orders for date range (confirmed only, paginated) | 3 | | Filter status 200-299, handle pagination |
-| 1.5 | Pull events for date range | 3 | | Events = time slots, needed for write-back |
-| 1.6 | Map orders → events → boats → time slots | 5 | | Configurable product name lookup (19 distinct names across seasons) |
-| 1.7 | Admin page: "Pull Week" button + display raw reservation data | 3 | | Table: date, boat, time, guest count, status |
-| 1.8 | Seed staff cross-reference table from Xola guides | 5 | | Admin UI: list guides, assign role (captain/mate/shore), boat qualifications. Data entry needs to be clean — you'll use this all season. |
+| 1.1 | Xola API client module (auth, base HTTP, error handling, retry) | 5 | [#22](https://github.com/mobiustripper42/crewbook/issues/22) | First external API in the stack — budget for auth quirks |
+| 1.2 | Pull experiences (list all, cache locally) | 2 | [#23](https://github.com/mobiustripper42/crewbook/issues/23) | One GET, store results |
+| 1.3 | Pull guides (list all crew in Xola) | 2 | [#24](https://github.com/mobiustripper42/crewbook/issues/24) | One GET, store results |
+| 1.4 | Pull orders for date range (confirmed only, paginated) | 3 | [#25](https://github.com/mobiustripper42/crewbook/issues/25) | Filter status 200-299, handle pagination |
+| 1.5 | Pull events for date range | 3 | [#26](https://github.com/mobiustripper42/crewbook/issues/26) | Events = time slots, needed for write-back |
+| 1.6 | Map orders → events → boats → time slots | 5 | [#27](https://github.com/mobiustripper42/crewbook/issues/27) | Configurable product name lookup (19 distinct names across seasons) |
+| 1.7 | Admin page: "Pull Week" button + display raw reservation data | 3 | [#28](https://github.com/mobiustripper42/crewbook/issues/28) | Table: date, boat, time, guest count, status |
+| 1.8 | Seed staff cross-reference table from Xola guides | 5 | [#29](https://github.com/mobiustripper42/crewbook/issues/29) | Admin UI: list guides, assign role (captain/mate/shore), boat qualifications. Data entry needs to be clean — you'll use this all season. |
 
 **Phase 1 total: 28 pts** → ~11.2 hrs at 0.40
 
