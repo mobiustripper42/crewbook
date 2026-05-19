@@ -42,6 +42,13 @@ export async function xolaFetch<T = unknown>(
   options: XolaFetchOptions = {},
 ): Promise<T> {
   const { headers: userHeaders, maxAttempts = DEFAULT_MAX_ATTEMPTS, ...init } = options;
+  if (!path.startsWith("/")) {
+    throw new XolaError(`xolaFetch path must start with '/' (got '${path}')`, {
+      status: 0,
+      path,
+      body: null,
+    });
+  }
   const env = resolveXolaEnv();
   const url = `${env.baseUrl}${path}`;
   const headers: Record<string, string> = {
@@ -69,12 +76,19 @@ export async function xolaFetch<T = unknown>(
     }
 
     if (res.ok) {
-      return (await parseBody(res)) as T;
+      try {
+        return (await parseBody(res)) as T;
+      } catch (err) {
+        throw new XolaError(
+          `Xola response body read failed: ${(err as Error).message}`,
+          { status: res.status, path, body: null },
+        );
+      }
     }
 
     const retriable = res.status >= 500 || res.status === 429;
     if (!retriable || attempt === maxAttempts) {
-      const body = await parseBody(res);
+      const body = await parseBody(res).catch(() => null);
       throw new XolaError(`Xola ${res.status} ${res.statusText} for ${path}`, {
         status: res.status,
         path,
@@ -83,7 +97,7 @@ export async function xolaFetch<T = unknown>(
     }
 
     const delay =
-      res.status === 429 ? retryAfterMs(res) ?? backoffMs(attempt) : backoffMs(attempt);
+      res.status === 429 ? (retryAfterMs(res) ?? backoffMs(attempt)) : backoffMs(attempt);
     await sleep(delay);
   }
 

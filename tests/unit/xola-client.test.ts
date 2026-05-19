@@ -124,6 +124,35 @@ describe("xolaFetch", () => {
     );
   });
 
+  it("rejects paths without leading slash", async () => {
+    let called = false;
+    globalThis.fetch = (async () => {
+      called = true;
+      return jsonResponse(200, {});
+    }) as FetchFn;
+
+    await assert.rejects(
+      () => xolaFetch("api/experiences"),
+      (err: unknown) => err instanceof XolaError && (err as XolaError).status === 0,
+    );
+    assert.equal(called, false, "should not have hit the network");
+  });
+
+  it("retries 429 without Retry-After (falls back to exp backoff)", async () => {
+    let calls = 0;
+    globalThis.fetch = (async () => {
+      calls++;
+      if (calls === 1) {
+        return jsonResponse(429, { error: "slow down" });
+      }
+      return jsonResponse(200, { ok: true });
+    }) as FetchFn;
+
+    const out = await xolaFetch<{ ok: boolean }>("/api/rate");
+    assert.deepEqual(out, { ok: true });
+    assert.equal(calls, 2);
+  });
+
   it("hits prod base URL when XOLA_ENV=prod", async () => {
     process.env.XOLA_ENV = "prod";
     process.env.XOLA_PROD_API_KEY = "prod-key";
