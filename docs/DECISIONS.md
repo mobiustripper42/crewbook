@@ -141,3 +141,11 @@ RLS is `enabled` on every table per CLAUDE.md ("No table is accessible without e
 **Tradeoff:** Phase 5.1 (staff self-select) will require an RLS update so staff can `UPDATE` their own row in `assignments` (claim a shift). That update is required regardless of the initial posture, so the loose baseline doesn't add work — it just defers one decision point.
 **Status:** Decided 2026-05-18 (Session 4, Task 0.3).
 **Revisit:** Phase 5.1 (staff self-select needs assignment write permission for `profile_id = auth.uid()`). Tighten profiles + assignments per-row reads if a real exposure surfaces — none expected at the BrewBoat threat model.
+
+**Production bootstrap:** `supabase/seed.sql` inserts the local-dev admin (`admin@brewboat.local`) but `supabase db push` does **not** apply seed data to remote projects — the seed file only runs on `supabase db reset` locally. In production there is no admin user when the schema first lands, and the loose RLS posture above blocks every write path (`is_admin()` returns false for everyone). Bootstrap path:
+
+1. Sign into the deployed app once via the production magic-link flow (Phase 5.1) — or, before Phase 5.1 lands, create a user via the Supabase dashboard's `Auth → Users → Add user` panel.
+2. The `handle_new_user` trigger from `20260518190000_initial_schema.sql` auto-creates a matching `profiles` row with all role flags false.
+3. From the Supabase dashboard's SQL editor, run `UPDATE public.profiles SET is_admin = true WHERE id = (SELECT id FROM auth.users WHERE email = 'YOUR_EMAIL_HERE');` exactly once.
+
+After step 3, that user has `is_admin = true` and every admin RLS policy unlocks. Subsequent admins can be promoted by the first admin through the admin UI once Phase 1.8 ships, or via the same SQL snippet in the meantime. The promotion is intentionally manual — the alternative ("auto-admin the first signup") is a known footgun: any visitor who finds the URL pre-promotion becomes admin.
