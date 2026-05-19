@@ -1,4 +1,7 @@
 # Changelog
+## [0.0.9] - 2026-05-19
+- PR #20: Phase 0.3 follow-up: commit generated Supabase types
+
 ## [0.0.8] - 2026-05-19
 - PR #18: Phase 0.4 — Vercel deploy prep: VersionTag + .env.example + prod-admin bootstrap
 
