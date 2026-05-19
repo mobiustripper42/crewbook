@@ -143,3 +143,19 @@ RLS is `enabled` on every table per CLAUDE.md ("No table is accessible without e
 **Tradeoff:** Phase 5.1 (staff self-select) will require an RLS update so staff can `UPDATE` their own row in `assignments` (claim a shift). That update is required regardless of the initial posture, so the loose baseline doesn't add work — it just defers one decision point.
 **Status:** Decided 2026-05-18 (Session 4, Task 0.3).
 **Revisit:** Phase 5.1 (staff self-select needs assignment write permission for `profile_id = auth.uid()`). Tighten profiles + assignments per-row reads if a real exposure surfaces — none expected at the BrewBoat threat model.
+
+**Production bootstrap:** `supabase/seed.sql` inserts the local-dev admin (`admin@brewboat.local`) but `supabase db push` does **not** apply seed data to remote projects — the seed file only runs on `supabase db reset` locally. The initial schema migration does not include a `handle_new_user` trigger, so creating an `auth.users` row does not automatically populate `public.profiles`. In production there is no admin user when the schema first lands, and the loose RLS posture above blocks every write path (`is_admin()` returns false for everyone). Bootstrap path:
+
+1. In the Supabase dashboard, `Auth → Users → Add user` — supply the admin's email + a temporary password. (Or, once Phase 5.1 magic-link auth ships, sign in once via the deployed app — that path also creates the `auth.users` row.)
+2. From the Supabase dashboard's SQL editor, run exactly once:
+   ```sql
+   insert into public.profiles (id, email, is_admin)
+   select id, email, true
+   from auth.users
+   where email = 'YOUR_EMAIL_HERE';
+   ```
+   This mirrors the pattern in `supabase/seed.sql`. The profiles `id` column FKs to `auth.users(id)` (`on delete cascade`), so a single row binds them.
+
+After step 2, that user has `is_admin = true` and every admin RLS policy unlocks. Subsequent admins can be promoted by the first admin through the admin UI once Phase 1.8 ships, or via the same SQL snippet in the meantime. The promotion is intentionally manual — the alternative ("auto-admin the first signup") is a known footgun: any visitor who finds the URL pre-promotion becomes admin.
+
+If the project later adopts a `handle_new_user` trigger (auto-create `profiles` on `auth.users` insert), revise step 2 to drop the `insert` in favor of a plain `update public.profiles set is_admin = true where id = (select id from auth.users where email = '…');`.

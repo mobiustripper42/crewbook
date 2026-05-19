@@ -2,6 +2,7 @@ import { Geist_Mono, Raleway } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { VersionTag } from "@/components/VersionTag"
 import { cn } from "@/lib/utils"
 
 const fontSans = Raleway({ subsets: ["latin"], variable: "--font-sans" })
@@ -28,7 +29,11 @@ export default function RootLayout({
       className={cn("antialiased", fontSans.variable, fontMono.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          {/* Phase 5 staff routes may add a bottom nav; nudge or hide there if so. */}
+          <VersionTag className="fixed right-3 bottom-2 font-mono text-xs text-muted-foreground" />
+        </ThemeProvider>
       </body>
     </html>
   )
