@@ -171,16 +171,15 @@ transcript: <TRANSCRIPT>
 **Context:**
 ```
 
-Commit and push **on the sessions branch** using `git -C` to target the worktree directory (no `cd` — shell state doesn't persist between Bash calls):
+Commit and push **on the sessions branch from inside the worktree**:
 
 ```
-git -C .sessions-worktree add sessions/$(basename "$SESSION_FILE")
-git -C .sessions-worktree commit -m "Open Session $SESSION_NUM entry"
-git -C .sessions-worktree push origin sessions
-git -C .sessions-worktree checkout sessions 2>/dev/null || true
+cd .sessions-worktree
+git add sessions/$(basename "$SESSION_FILE")
+git commit -m "Open Session $SESSION_NUM entry"
+git push origin sessions
+cd ..
 ```
-
-The final `checkout sessions` re-pins the worktree HEAD to the `sessions` branch — guards against a detached-HEAD state.
 
 ## Step 7 — Read last session context
 

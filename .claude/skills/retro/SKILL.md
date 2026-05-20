@@ -144,7 +144,7 @@ Reconcile drift: issues with `phase:<N>` labels that don't appear in PROJECT_PLA
 Update the velocity table at the top:
 ```
 | Phase | Sessions | Points | Wall (h) | Dev (h) | Review (h) | hrs/pt (dev) |
-|-------|----------|--------|----------|---------|------------|--------------|
+|-------|----------|--------|----------|---------|------------|______________|
 | N     | <count>  | <pts>  | <wall>   | <dev>   | <review>   | <hrs_pt_dev> |
 ```
 

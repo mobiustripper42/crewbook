@@ -74,9 +74,11 @@ If the wall_clock looks wildly wrong (e.g. user expected 2h, sees 9h because of 
 ## Step 5 — Commit + push the sessions branch (from the worktree)
 
 ```
-git -C .sessions-worktree add sessions/$(basename "$SESSION_FILE")
-git -C .sessions-worktree commit -m "Close Session <N>"
-git -C .sessions-worktree push origin sessions
+cd .sessions-worktree
+git add sessions/$(basename "$SESSION_FILE")
+git commit -m "Close Session <N>"
+git push origin sessions
+cd ..
 ```
 
 No version bump. No CHANGELOG. No tag. No branch cleanup (task branches and their PRs are managed by the user per-task at `/kill-this` time and via the GitHub merge button).
