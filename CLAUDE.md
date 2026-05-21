@@ -127,19 +127,20 @@ The wrapper only catches CLI ops. The following are **not** guarded — they rel
 
 Xola is the source of truth for reservations. BrewBoat reads orders/events/guides from Xola, generates and assigns shifts internally, then writes guide assignments back to Xola.
 
-- **Sandbox:** `sandbox.xola.com` — all development and testing here first.
-- **Production:** `xola.com` — only after sandbox validation. First prod write happens in Phase 6.4 (deliberate moment).
-- **App Store registration:** required before any API key works. Started Phase 0.6 — human approval has latency. Contact `integrations@xola.com` for approval + seller account.
-- **Auth:** API key stored as `XOLA_API_KEY` (sandbox) and `XOLA_PROD_API_KEY` (prod). Server-side only. Never expose to client.
-- **Read endpoints used:** experiences (list), guides (list), orders (paginated, filter status 200–299), events (time slots).
-- **Write endpoints used:** assign guide to event, remove guide from event, acknowledge.
-- **Order → event mapping:** events are time slots; orders fill events. Multiple orders per event is normal (party of 6 + party of 4 in the same brewboat slot).
-- **Product type lookup (DEC-108):** 19 distinct product names across 2024–2025 seasons map to 3 internal types (`brewboat`, `captained_duffy`, `duffy_rental`). Lookup is a Supabase table, not hardcoded — admin-editable.
-- **Sample data:** `xola-sample-data.json` (5 representative weeks from 2024–2025) lives in `tests/fixtures/`. Use for agent prompt few-shots and pipeline tests without burning sandbox quota.
-- **Idempotency:** write-back POSTs are idempotent (assigning the same guide to the same event twice is a no-op). Bulk write-back tracks per-assignment status (written / failed / skipped).
-- **Failure mode:** if write-back fails, the schedule board still works. Admin can copy assignments into Xola by hand using the board as reference (DEC-112).
+**Canonical reference:** [`docs/XOLA_INTEGRATION.md`](docs/XOLA_INTEGRATION.md) — URLs, known IDs, auth model, endpoint patterns, install lifecycle, contacts. Read it before writing any Xola-touching code.
 
-Docs: [https://developers.xola.com/docs/integrate-with-xola](https://developers.xola.com/docs/integrate-with-xola)
+**Architectural decisions:** DEC-102 (Xola as source of truth), DEC-108 (product name → type mapping is configurable), DEC-111 (App Store registration), DEC-112 (write-back is gravy), DEC-114 (one plugin user key + seller scoping via URL + required `X-API-Version` header).
+
+**Operational rules that don't fit in DEC entries:**
+- Sandbox first (`sandbox.xola.com`), prod only after sandbox validation. First prod write happens in Phase 6.4.
+- Auth env: `XOLA_PLUGIN_KEY` (the plugin user key per DEC-114). Server-side only. Never expose to client. The developer-account key is not stored in the app — only the plugin user key.
+- Every request: `X-API-Key: <plugin key>` AND `X-API-Version: 2021-03-10`. Both required.
+- Seller ID: `XOLA_SELLER_ID` env var. Sandbox value `69dfbe5744e51dad92085ae5`.
+- Order → event mapping: events are time slots; multiple orders per event is normal (party of 6 + party of 4 in the same brewboat slot).
+- Product types: 19 Xola product names → 3 internal types via admin-editable lookup (DEC-108).
+- Sample data: `tests/fixtures/xola-sample-data.json` (5 weeks from 2024–2025) for agent few-shots without burning sandbox quota.
+- Write-back POSTs are idempotent. Bulk write-back tracks per-assignment status (written / failed / skipped).
+- 403/404 on un-prefixed paths like `/api/guides` is a wrong-URL bug, not a permissions issue (DEC-114). Don't escalate to Xola support without re-checking the path against `XOLA_INTEGRATION.md`.
 
 ## Commands
 ```bash

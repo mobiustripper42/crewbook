@@ -1,10 +1,9 @@
 // Phase 1.2: pull Xola's experiences (tour catalog) and cache locally.
 //
-// Xola paginates via {data, paging:{next?}} where `next` is a relative path
-// (e.g. "/api/experiences?cursor=..."). Walk the cursor chain until `next`
-// is absent. Cap at MAX_PAGES to prevent runaway in pathological cases.
+// Pagination is delegated to `paginate<T>` (lib/xola/paginate.ts).
 
 import { xolaFetch } from "./client.ts";
+import { paginate } from "./paginate.ts";
 import type { Json } from "../supabase/types.ts";
 
 export interface XolaExperience {
@@ -16,46 +15,18 @@ export interface XolaExperience {
   [key: string]: unknown;
 }
 
-interface ListResponse {
-  data: XolaExperience[];
-  paging?: { next?: string };
-}
-
 // Cap at 100 (Xola's per-page max — confirmed against sandbox; ?limit=200
 // is silently clamped). Drew's prod catalog is ~20, so most syncs are one
-// page; this is defense-in-depth for any future catalog growth.
+// page; this 100/page setting is defense-in-depth for future catalog growth.
 const FIRST_PATH = "/api/experiences?limit=100";
-const MAX_PAGES = 50;
 
 export async function fetchAllExperiences(
   options: { fetcher?: typeof xolaFetch } = {},
 ): Promise<XolaExperience[]> {
-  const fetcher = options.fetcher ?? xolaFetch;
-  const all: XolaExperience[] = [];
-  const seen = new Set<string>();
-  let nextPath: string | undefined = FIRST_PATH;
-
-  for (let page = 0; page < MAX_PAGES; page++) {
-    if (!nextPath) break;
-    if (seen.has(nextPath)) {
-      // Xola sandbox has been observed returning the same paging.next as
-      // the path we just fetched (effectively a stuck cursor). Treat a
-      // repeated cursor as end-of-list rather than spinning the loop.
-      break;
-    }
-    seen.add(nextPath);
-    const res: ListResponse = await fetcher<ListResponse>(nextPath);
-    if (Array.isArray(res?.data)) all.push(...res.data);
-    nextPath = res?.paging?.next;
-  }
-
-  if (nextPath && !seen.has(nextPath)) {
-    throw new Error(
-      `fetchAllExperiences exceeded ${MAX_PAGES} pages — pagination loop suspected`,
-    );
-  }
-
-  return all;
+  return paginate<XolaExperience>(FIRST_PATH, {
+    fetcher: options.fetcher,
+    label: "fetchAllExperiences",
+  });
 }
 
 export interface SyncResult {
