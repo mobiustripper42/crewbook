@@ -2,8 +2,8 @@
 // (experiences, guides, orders, events) live in sibling modules and call
 // xolaFetch here.
 //
-// Auth header: X-API-Key (confirmed against sandbox.xola.com via
-// scripts/xola-ping.mjs in Phase 0.6).
+// Auth headers (DEC-114): X-API-Key (plugin user key) + X-API-Version (pinned
+// API contract). Both are required on every call.
 //
 // Retry policy:
 //   - Network errors: retry
@@ -11,7 +11,7 @@
 //   - 429: retry, honor numeric Retry-After (seconds) if present
 //   - Other 4xx: throw XolaError immediately (auth/validation — won't fix itself)
 
-import { resolveXolaEnv } from "./env.ts";
+import { resolveXolaEnv, XOLA_API_VERSION } from "./env.ts";
 
 export class XolaError extends Error {
   readonly status: number;
@@ -53,6 +53,7 @@ export async function xolaFetch<T = unknown>(
   const url = `${env.baseUrl}${path}`;
   const headers: Record<string, string> = {
     "X-API-Key": env.apiKey,
+    "X-API-Version": XOLA_API_VERSION,
     Accept: "application/json",
     ...userHeaders,
   };

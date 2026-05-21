@@ -223,6 +223,33 @@ export type Database = {
         }
         Relationships: []
       }
+      xola_guides: {
+        Row: {
+          email: string | null
+          id: string
+          name: string
+          raw: Json
+          seller_id: string
+          synced_at: string
+        }
+        Insert: {
+          email?: string | null
+          id: string
+          name: string
+          raw: Json
+          seller_id: string
+          synced_at?: string
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          name?: string
+          raw?: Json
+          seller_id?: string
+          synced_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -259,10 +259,8 @@ In order of what hurts least to defer:
 
 ## Xola Integration Notes
 
-- **Sandbox:** `sandbox.xola.com` — all development and testing here first
-- **Production:** `xola.com` — only after sandbox validation
-- **App Store:** Must register app and get approved before API key works ([docs](https://developers.xola.com/docs/integrate-with-xola))
-- **Contact:** `integrations@xola.com` for approval + seller account
-- **Product names change between seasons** — 19 distinct names across 2024–2025. Mapper must be configurable.
-- **Sample data:** `xola-sample-data.json` — 5 representative weeks extracted from 2024–2025 exports
-- **Guide assignments:** API supports assign/remove/acknowledge per event — full round-trip confirmed
+Operational reference (URLs, IDs, endpoint patterns, auth model, install lifecycle, contacts) lives in [`XOLA_INTEGRATION.md`](./XOLA_INTEGRATION.md). Architectural rationale is in [DECISIONS.md](./DECISIONS.md) — DEC-102 (read+write via Xola), DEC-108 (product type mapping), DEC-111 (App Store registration), DEC-112 (write-back is gravy), DEC-114 (plugin auth model).
+
+Project-specific facts not covered by the integration doc:
+- **Product names change between seasons** — 19 distinct names across 2024–2025. Mapper must be configurable (DEC-108).
+- **Sample data:** `tests/fixtures/xola-sample-data.json` — 5 representative weeks extracted from 2024–2025 exports.

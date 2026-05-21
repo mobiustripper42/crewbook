@@ -23,7 +23,7 @@ function jsonResponse(status: number, body: unknown, headers: Record<string, str
 
 beforeEach(() => {
   process.env.XOLA_ENV = "sandbox";
-  process.env.XOLA_API_KEY = "test-key";
+  process.env.XOLA_PLUGIN_KEY = "test-key";
 });
 
 afterEach(() => {
@@ -45,6 +45,7 @@ describe("xolaFetch", () => {
     assert.equal(captured[0].url, "https://sandbox.xola.com/api/experiences?limit=1");
     const headers = captured[0].init.headers as Record<string, string>;
     assert.equal(headers["X-API-Key"], "test-key");
+    assert.equal(headers["X-API-Version"], "2021-03-10");
     assert.equal(headers["Accept"], "application/json");
   });
 
@@ -116,11 +117,11 @@ describe("xolaFetch", () => {
     assert.equal(calls, 2);
   });
 
-  it("throws when XOLA_API_KEY missing", async () => {
-    delete process.env.XOLA_API_KEY;
+  it("throws when XOLA_PLUGIN_KEY missing", async () => {
+    delete process.env.XOLA_PLUGIN_KEY;
     await assert.rejects(
       () => xolaFetch("/api/anything"),
-      /XOLA_API_KEY is not set/,
+      /XOLA_PLUGIN_KEY is not set/,
     );
   });
 
@@ -155,7 +156,7 @@ describe("xolaFetch", () => {
 
   it("hits prod base URL when XOLA_ENV=prod", async () => {
     process.env.XOLA_ENV = "prod";
-    process.env.XOLA_PROD_API_KEY = "prod-key";
+    process.env.XOLA_PROD_PLUGIN_KEY = "prod-key";
     let captured = "";
     globalThis.fetch = (async (input: RequestInfo | URL) => {
       captured = String(input);
