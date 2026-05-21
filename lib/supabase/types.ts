@@ -250,6 +250,27 @@ export type Database = {
         }
         Relationships: []
       }
+      xola_orders: {
+        Row: {
+          id: string
+          raw: Json
+          seller_id: string
+          synced_at: string
+        }
+        Insert: {
+          id: string
+          raw: Json
+          seller_id: string
+          synced_at?: string
+        }
+        Update: {
+          id?: string
+          raw?: Json
+          seller_id?: string
+          synced_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
