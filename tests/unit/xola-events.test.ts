@@ -81,10 +81,35 @@ describe("fetchEvents URL construction", () => {
     const calls: string[] = [];
     const fetcher = async <T>(path: string): Promise<T> => {
       calls.push(path);
-      return { data: [] } as unknown as T;
+      return [] as unknown as T;
     };
     await fetchEvents({ start: "2026-01-01", end: "2026-01-07", fetcher });
     assert.match(calls[0], /offset=-18000/);
+  });
+
+  it("DST-spanning window uses a single consistent offset for start/end/?offset=", async () => {
+    // US spring-forward 2026 is Mar 8. Querying Mar 1 → Mar 15 spans the
+    // transition. A naive per-date offset lookup would build `start` as
+    // EST and `end` as EDT, but the URL ?offset= can only carry one value.
+    // The fix: single offset (from noon UTC on the start day = EST) used
+    // consistently for both bounds AND the URL param. Off-by-one-hour bug
+    // is invisible at BrewBoat (no midnight tours), pinned here so it
+    // can't regress.
+    const calls: string[] = [];
+    const fetcher = async <T>(path: string): Promise<T> => {
+      calls.push(path);
+      return [] as unknown as T;
+    };
+    await fetchEvents({ start: "2026-03-01", end: "2026-03-15", fetcher });
+    const path = calls[0];
+    // Noon UTC on Mar 1 in NY is 07:00 EST, so offset=-18000.
+    assert.match(path, /offset=-18000/);
+    // 2026-03-01 00:00 EST = 2026-03-01 05:00 UTC.
+    const expectedStart = Math.floor(Date.UTC(2026, 2, 1, 5, 0, 0) / 1000);
+    assert.match(path, new RegExp(`start=${expectedStart}`));
+    // 2026-03-15 23:59:59 EST = 2026-03-16 04:59:59 UTC.
+    const expectedEnd = Math.floor(Date.UTC(2026, 2, 16, 4, 59, 59) / 1000);
+    assert.match(path, new RegExp(`end=${expectedEnd}`));
   });
 
   it("honors explicit timezone override", async () => {

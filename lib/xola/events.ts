@@ -57,13 +57,26 @@ export async function fetchEvents(options: FetchEventsOptions): Promise<XolaEven
   const reserved = options.reserved ?? true;
   const fetcher = options.fetcher ?? xolaFetch;
 
-  const startEpoch = localDateToEpochSeconds(options.start, timezone, 0, 0, 0);
-  const endEpoch = localDateToEpochSeconds(options.end, timezone, 23, 59, 59);
-  // Offset for the midpoint of the window — handles DST transitions that
-  // fall inside the window by picking one side; sub-second drift is
-  // acceptable for the Xola filter semantics (it's a window not a stamp).
-  const midpointMs = ((startEpoch + endEpoch) / 2) * 1000;
-  const offsetSec = getOffsetSeconds(new Date(midpointMs), timezone);
+  // Compute the offset ONCE — at noon UTC on the start day, which is
+  // unambiguous for any hour-scale DST zone — and use it consistently for
+  // both bounds and the ?offset= URL param. This guarantees the start/end
+  // epochs we send line up with the wall-time semantics Xola applies to
+  // the offset; a per-date lookup for each bound would drift by one hour
+  // across a DST-spanning window (e.g. Mar 1 → Mar 15 in America/New_York).
+  // Practical impact for BrewBoat (no midnight tours, weekly windows): nil.
+  // Contract impact: pinned by tests.
+  const startDayMatch = options.start.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!startDayMatch) {
+    throw new Error(`fetchEvents: invalid start date '${options.start}'`);
+  }
+  const [, sy, smo, sd] = startDayMatch;
+  const offsetProbe = new Date(
+    Date.UTC(Number(sy), Number(smo) - 1, Number(sd), 12),
+  );
+  const offsetSec = getOffsetSeconds(offsetProbe, timezone);
+
+  const startEpoch = localDateToEpochSeconds(options.start, timezone, 0, 0, 0, offsetSec);
+  const endEpoch = localDateToEpochSeconds(options.end, timezone, 23, 59, 59, offsetSec);
 
   const params = new URLSearchParams();
   params.set("seller", sellerId);

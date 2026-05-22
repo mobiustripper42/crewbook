@@ -51,18 +51,29 @@ export function localDateToEpochSeconds(
   hour = 0,
   minute = 0,
   second = 0,
+  // Optional offset override. When set, this offset (seconds, e.g. -14400
+  // for EDT) is used directly instead of being looked up from `timeZone`
+  // at the computed instant. Callers building a multi-day window who want
+  // both bounds to share a single offset (so the URL's `?offset=` param
+  // matches the boundary semantics — see fetchEvents in lib/xola/events.ts)
+  // should compute the offset once at a non-transition wall-time and pass
+  // it here for both bounds.
+  overrideOffsetSec?: number,
 ): number {
-  // Parse as UTC first, then shift backward by the offset to get the
-  // moment that displays as "isoDate hour:minute:second" in timeZone.
   const m = isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) {
     throw new Error(`localDateToEpochSeconds: expected YYYY-MM-DD, got '${isoDate}'`);
   }
   const [, y, mo, d] = m;
   const asUtc = Date.UTC(Number(y), Number(mo) - 1, Number(d), hour, minute, second);
-  // Use the offset at that approximate instant — for boundary dates this
-  // is within seconds of the true local-midnight offset; DST transitions
-  // happen at 02:00 local, so 00:00 local is unambiguous.
-  const offsetSec = getOffsetSeconds(new Date(asUtc), timeZone);
+  // Default: look up the offset at the approximate instant. Cleveland-
+  // specific assumption baked in here: DST transitions in America/New_York
+  // happen at 02:00 local, so 00:00 local is unambiguous. This is NOT a
+  // universal IANA invariant — Brazil (historically) and a few Pacific
+  // zones transition at midnight. For V1 (hardcoded Cleveland) this is
+  // fine; V2 multi-seller should either pass overrideOffsetSec or look up
+  // at noon-local (always unambiguous for hour-scale DST).
+  const offsetSec =
+    overrideOffsetSec ?? getOffsetSeconds(new Date(asUtc), timeZone);
   return Math.floor(asUtc / 1000) - offsetSec;
 }

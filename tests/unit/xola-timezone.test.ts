@@ -26,6 +26,11 @@ describe("getOffsetSeconds — DST awareness", () => {
     const d = new Date("2026-06-15T12:00:00Z");
     assert.equal(getOffsetSeconds(d, "Asia/Kolkata"), 5 * 3600 + 30 * 60);
   });
+
+  it("handles 15-minute offsets (Nepal +5:45)", () => {
+    const d = new Date("2026-06-15T12:00:00Z");
+    assert.equal(getOffsetSeconds(d, "Asia/Kathmandu"), 5 * 3600 + 45 * 60);
+  });
 });
 
 describe("localDateToEpochSeconds", () => {
