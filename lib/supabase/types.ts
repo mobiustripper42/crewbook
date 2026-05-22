@@ -199,6 +199,27 @@ export type Database = {
         }
         Relationships: []
       }
+      xola_events: {
+        Row: {
+          id: string
+          raw: Json
+          seller_id: string
+          synced_at: string
+        }
+        Insert: {
+          id: string
+          raw: Json
+          seller_id: string
+          synced_at?: string
+        }
+        Update: {
+          id?: string
+          raw?: Json
+          seller_id?: string
+          synced_at?: string
+        }
+        Relationships: []
+      }
       xola_experiences: {
         Row: {
           description: string | null
