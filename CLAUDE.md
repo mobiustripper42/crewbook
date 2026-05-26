@@ -123,6 +123,33 @@ The wrapper only catches CLI ops. The following are **not** guarded — they rel
 - Direct `psql` against the prod URL.
 - Any tool that doesn't go through the `supabase` binary.
 
+### Cross-environment env-var sync (Supabase ↔ Vercel)
+
+**Vercel env vars and Supabase project refs do not auto-sync.** Projects running separate dev/preview and production Supabase instances must wire Vercel's environment scopes to match: the three vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`) appear **twice** in Vercel — once per environment scope — with intentionally different values.
+
+When you rotate keys, switch project refs, or otherwise touch these vars, both scopes must stay coherent:
+- Vercel **Production** → matches prod project's URL + keys.
+- Vercel **Preview + Development** → matches dev/preview project's URL + keys, which is what `.env.local` has.
+
+Vercel does not redeploy on env-var change. After updating, trigger a redeploy of `main` (Deployments → ⋯ → Redeploy) or push any commit.
+
+Failure modes:
+- **Undefined values:** `createServerClient()` gets `undefined` for URL or key → `HTTP 500` site-wide. Local `npm run dev` keeps working because it reads `.env.local` directly, masking the regression until someone hits the deployed site.
+- **Swapped projects:** prod points at the dev DB or vice versa. Symptoms: prod login works but shows test fixtures, or real user data appears on a preview URL. Diff-check before assuming everything is wired correctly.
+- **Name typo:** a Vercel-side name like `SUPABASE_ANON_KEY` instead of `NEXT_PUBLIC_SUPABASE_ANON_KEY` produces the same 500 even when the value is correct.
+
+Diff-check ritual after any rotation:
+
+```bash
+vercel env pull --environment=production .env.production.tmp
+vercel env pull --environment=preview    .env.preview.tmp
+# Preview should match .env.local:
+diff <(grep -E "SUPABASE" .env.local       | sort) \
+     <(grep -E "SUPABASE" .env.preview.tmp | sort)
+# Production should NOT match .env.local — confirm it references the prod project ref:
+grep "SUPABASE_URL" .env.production.tmp
+```
+
 ## Xola Integration
 
 Xola is the source of truth for reservations. BrewBoat reads orders/events/guides from Xola, generates and assigns shifts internally, then writes guide assignments back to Xola.
