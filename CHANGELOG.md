@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.6] - 2026-05-27
+- PR #36: Phase 1.5: pull Xola events + DST-aware timezone + bare-array fix
+
 ## [0.1.5] - 2026-05-27
 - PR #35: Phase 1.4: pull Xola orders + DEC-115 + skip paginator
 
