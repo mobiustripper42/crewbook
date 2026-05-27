@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.3] - 2026-05-27
+- PR #33: auto-sync downstream — 2026-05-21
+
 ## [0.1.2] - 2026-05-27
 - PR #31: Phase 1.2 — Pull Xola experiences + local cache
 
