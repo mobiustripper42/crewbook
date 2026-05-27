@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.5] - 2026-05-27
+- PR #35: Phase 1.4: pull Xola orders + DEC-115 + skip paginator
+
 ## [0.1.4] - 2026-05-27
 - PR #34: Phase 1.3: pull Xola guides + DEC-114 + paginate helper
 
