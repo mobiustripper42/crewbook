@@ -1,4 +1,8 @@
 # Changelog
+## [0.2.0] - 2026-05-27 — Phase 1
+- 28 pts shipped across 3 sessions (0.15 hrs/pt dev)
+- See `docs/RETROSPECTIVES.md` for the full retro
+
 ## [0.1.14] - 2026-05-27
 - PR #44: Phase 1.8: staff cross-reference (DEC-116 profile identity + admin UI)
 
