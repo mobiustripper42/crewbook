@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.11] - 2026-05-27
+- PR #41: Phase 1.6: map Xola orders → events → boats → time slots
+
 ## [0.1.10] - 2026-05-27
 - PR #40: chore: sync seeds v3 — forward-port cross-env Supabase↔Vercel section
 
