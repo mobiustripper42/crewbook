@@ -113,8 +113,9 @@ These are recorded compactly per the project plan (April 12, 2026 planning poker
 **Status:** Decided 2026-04-12.
 
 ### DEC-108: Product name → type mapping is configurable
-**Decision:** Lookup table, not hardcoded enum. 19 distinct product names across 2024–2025 seasons.
-**Status:** Decided 2026-04-12.
+**Decision:** Lookup table (`product_type_lookup`), not hardcoded enum. The live product set is small — one active product as of 2026-05 (`Brewboat Tour - captained` → `brewboat`) with a few historical / defunct names lingering in Xola. The table exists so adding a new product (a future "Sunset Wine Tour" type) is an admin SQL/UI change rather than a code change. Unknown names map to `null` with a warning rather than failing the schedule — see [`lib/xola/mapping.ts`](../lib/xola/mapping.ts).
+**Status:** Decided 2026-04-12. Implemented 2026-05-27 (Phase 1.6).
+**Note:** The original DEC entry claimed "19 distinct product names across 2024–2025 seasons." Phase 1.6 investigation showed that figure was historical noise — most of those names are defunct products that never produce events in a current week. Corrected here for accuracy; the configurability rationale stands either way.
 
 ### DEC-109: Playwright testing — coverage baked into task estimates
 **Decision:** Setup in Phase 0 (task 0.7). Each subsequent task's estimate includes its test coverage.

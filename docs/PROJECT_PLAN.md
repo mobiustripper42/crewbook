@@ -58,7 +58,7 @@ Pull reservation data from Xola. Read-only. Use 2025 production data for validat
 | 1.3 | Pull guides (list all crew in Xola) | 2 | [#24](https://github.com/mobiustripper42/crewbook/issues/24) | One GET, store results |
 | 1.4 | Pull orders for date range (confirmed only, paginated) | 3 | [#25](https://github.com/mobiustripper42/crewbook/issues/25) | Filter status 200-299, handle pagination |
 | 1.5 | Pull events for date range | 3 | [#26](https://github.com/mobiustripper42/crewbook/issues/26) | Events = time slots, needed for write-back |
-| 1.6 | Map orders → events → boats → time slots | 5 | [#27](https://github.com/mobiustripper42/crewbook/issues/27) | Configurable product name lookup (19 distinct names across seasons) |
+| 1.6 | Map orders → events → boats → time slots | 5 | [#27](https://github.com/mobiustripper42/crewbook/issues/27) | Configurable product name lookup per DEC-108 (small live set, designed for growth) |
 | 1.7 | Admin page: "Pull Week" button + display raw reservation data | 3 | [#28](https://github.com/mobiustripper42/crewbook/issues/28) | Table: date, boat, time, guest count, status |
 | 1.8 | Seed staff cross-reference table from Xola guides | 5 | [#29](https://github.com/mobiustripper42/crewbook/issues/29) | Admin UI: list guides, assign role (captain/mate/shore), boat qualifications. Data entry needs to be clean — you'll use this all season. |
 
@@ -262,5 +262,5 @@ In order of what hurts least to defer:
 Operational reference (URLs, IDs, endpoint patterns, auth model, install lifecycle, contacts) lives in [`XOLA_INTEGRATION.md`](./XOLA_INTEGRATION.md). Architectural rationale is in [DECISIONS.md](./DECISIONS.md) — DEC-102 (read+write via Xola), DEC-108 (product type mapping), DEC-111 (App Store registration), DEC-112 (write-back is gravy), DEC-114 (plugin auth model).
 
 Project-specific facts not covered by the integration doc:
-- **Product names change between seasons** — 19 distinct names across 2024–2025. Mapper must be configurable (DEC-108).
-- **Sample data:** `tests/fixtures/xola-sample-data.json` — 5 representative weeks extracted from 2024–2025 exports.
+- **Product names change between seasons** — live set is small (one active product as of 2026-05) but Xola accumulates defunct names from prior seasons. Mapper is configurable per DEC-108; unknown names map to `null` with a warning rather than failing the schedule.
+- **Sample data:** Phase 1.5 (Session 8) populated the local Supabase mirror via live sandbox sync — 5 events + 5 orders + 1 brewboat experience. No fixture JSON file in the repo; tests synthesize multi-order shapes off the real sandbox payload structure.
