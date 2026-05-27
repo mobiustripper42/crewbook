@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.14] - 2026-05-27
+- PR #44: Phase 1.8: staff cross-reference (DEC-116 profile identity + admin UI)
+
 ## [0.1.13] - 2026-05-27
 - PR #43: docs: add TEST.md — canonical how to test BrewBoat right now
 
