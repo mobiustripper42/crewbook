@@ -75,11 +75,11 @@ The brain — reservations go in, shifts come out.
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 2.1 | Shift generation agent: prompt design + structured JSON output | 5 | | System prompt with business rules, few-shot examples from sample data. THIS is the product. |
-| 2.2 | Reservation → shift pipeline (call agent, parse output, store) | 3 | | Orchestration: pull → agent → validate → persist |
-| 2.3 | Shift review UI: list generated shifts for a week | 5 | | Needs real UX — scannable, groupable by day. You'll verify this closely before pushing. |
-| 2.4 | Shift editing: admin can split/merge/delete shifts before posting | 5 | | Where "the agent got it wrong" gets fixed |
-| 2.5 | Validate agent output against 2025 data | 3 | | Run against known weeks, compare to reality. 2 years of actual data available. |
+| 2.1 | Shift generation agent: prompt design + structured JSON output | 5 | [#45](https://github.com/mobiustripper42/crewbook/issues/45) | System prompt with business rules, few-shot examples from sample data. THIS is the product. |
+| 2.2 | Reservation → shift pipeline (call agent, parse output, store) | 3 | [#46](https://github.com/mobiustripper42/crewbook/issues/46) | Orchestration: pull → agent → validate → persist |
+| 2.3 | Shift review UI: list generated shifts for a week | 5 | [#47](https://github.com/mobiustripper42/crewbook/issues/47) | Needs real UX — scannable, groupable by day. You'll verify this closely before pushing. |
+| 2.4 | Shift editing: admin can split/merge/delete shifts before posting | 5 | [#48](https://github.com/mobiustripper42/crewbook/issues/48) | Where "the agent got it wrong" gets fixed |
+| 2.5 | Validate agent output against 2025 data | 3 | [#49](https://github.com/mobiustripper42/crewbook/issues/49) | Run against known weeks, compare to reality. 2 years of actual data available. |
 
 **Phase 2 total: 21 pts** → ~8.4 hrs at 0.40
 
