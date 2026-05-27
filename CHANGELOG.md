@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.13] - 2026-05-27
+- PR #43: docs: add TEST.md — canonical how to test BrewBoat right now
+
 ## [0.1.12] - 2026-05-27
 - PR #42: Phase 1.7: admin Pull Week page + reservation table
 
