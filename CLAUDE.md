@@ -30,6 +30,7 @@ Multi-role staff exist (a captain who also works shore is common); roles are boo
 | `docs/RETROSPECTIVES.md` | Phase-end retrospectives written by `/retro` |
 | `docs/AGENTS.md` | Agent and skill specs |
 | `docs/BRAND.md` | Philosophy, visual direction, voice |
+| `docs/TEST.md` | How to test the app today (local-only, env vars, manual + automated flow). **Keep current** — update in the same PR as any change to the test path (remote Supabase, prod Xola cutover, auth, CI, staging). |
 | `sessions/*.md` (on orphan `sessions` branch via `.sessions-worktree/`) | Per-session files — `YYYY-MM-DD-HHMM-<dev>-<slug>.md`. Atomic after `/its-dead` closes (DEC-013); lives on the orphan `sessions` branch decoupled from any code branch (DEC-014). |
 | `.claude/seeds-version` | Schema version this project was last installed at. Used by `/pull-seeds` to gate template syncs. |
 | `.claude/project-type` | Project type — `webapp` or `tool`. Used by `@sync-config` to gate template files that don't apply to this project's type (DEC-011). Optional. |
