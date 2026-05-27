@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.12] - 2026-05-27
+- PR #42: Phase 1.7: admin Pull Week page + reservation table
+
 ## [0.1.11] - 2026-05-27
 - PR #41: Phase 1.6: map Xola orders → events → boats → time slots
 
