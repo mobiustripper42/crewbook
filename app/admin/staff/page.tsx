@@ -11,12 +11,6 @@
 
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
-// Force SSR on every request — without this, Next pre-renders at build
-// time and the page captures whatever was in the DB during the build
-// instead of the current state. /admin/reservations doesn't need this
-// because `await searchParams` already opts it into dynamic.
-export const dynamic = "force-dynamic";
-
 import { ProfileEditForm } from "@/components/admin/profile-edit-form";
 
 import {
@@ -25,6 +19,12 @@ import {
   unlinkGuide,
 } from "./actions";
 import { rankMatches, type GuideForMatch, type ProfileForMatch } from "./match";
+
+// Force SSR on every request — without this, Next pre-renders at build
+// time and the page captures whatever was in the DB during the build
+// instead of the current state. /admin/reservations doesn't need this
+// because `await searchParams` already opts it into dynamic.
+export const dynamic = "force-dynamic";
 
 // Server-Component <form action={...}> requires void-returning handlers.
 // The underlying actions return ActionResult for the Client Component edit
