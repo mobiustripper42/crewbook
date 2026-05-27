@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.2] - 2026-05-27
+- PR #31: Phase 1.2 — Pull Xola experiences + local cache
+
 ## [0.1.1] - 2026-05-27
 - PR #30: Phase 1.1 — Xola API client (auth, retry, error handling)
 
