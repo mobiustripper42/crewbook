@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.10] - 2026-05-27
+- PR #40: chore: sync seeds v3 — forward-port cross-env Supabase↔Vercel section
+
 ## [0.1.9] - 2026-05-27
 - PR #39: auto-sync downstream — 2026-05-24
 
