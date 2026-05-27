@@ -1,4 +1,7 @@
 # Changelog
+## [0.1.1] - 2026-05-27
+- PR #30: Phase 1.1 — Xola API client (auth, retry, error handling)
+
 ## [0.1.0] - 2026-05-19 — Phase 0
 - 17 pts shipped across 5 sessions (0.31 hrs/pt active)
 - See `docs/RETROSPECTIVES.md` for the full retro
