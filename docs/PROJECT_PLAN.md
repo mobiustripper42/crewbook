@@ -24,6 +24,7 @@ BrewBoat has an external API dependency Sailbook didn't — expect implementatio
 | Phase | Sessions | Points | Wall (h) | Dev (h) | Review (h) | hrs/pt (active) | Notes |
 |-------|----------|--------|----------|---------|------------|-----------------|-------|
 | 0     | 5        | 17     | 13.88    | 2.31    | 2.97        | 0.31            | Single-boundary model (concurrent-PR session inflated review_time under DEC-015 method). 25% under the 0.40 baseline — Phase 0 was self-contained setup work; Phase 1+ external integrations will run higher. |
+| 1     | 3        | 28     | 24.00    | 4.17    | 1.83        | 0.21            | Per-PR window model (DEC-015). 9 PRs merged across 3 sessions; 6 actual hours of dev+review against 28 planned pts. Breaks dominated wall clock at 18h (Session 8 overnight). Session-logged points = 34 (vs 28 planned) — scope overruns absorbed into existing tasks rather than late-add issues. Half the 0.40 forecast; Xola integration was less spiky than expected. |
 
 ---
 
@@ -53,14 +54,14 @@ Pull reservation data from Xola. Read-only. Use 2025 production data for validat
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 1.1 | Xola API client module (auth, base HTTP, error handling, retry) | 5 | [#22](https://github.com/mobiustripper42/crewbook/issues/22) | First external API in the stack — budget for auth quirks |
-| 1.2 | Pull experiences (list all, cache locally) | 2 | [#23](https://github.com/mobiustripper42/crewbook/issues/23) | One GET, store results |
-| 1.3 | Pull guides (list all crew in Xola) | 2 | [#24](https://github.com/mobiustripper42/crewbook/issues/24) | One GET, store results |
-| 1.4 | Pull orders for date range (confirmed only, paginated) | 3 | [#25](https://github.com/mobiustripper42/crewbook/issues/25) | Filter status 200-299, handle pagination |
-| 1.5 | Pull events for date range | 3 | [#26](https://github.com/mobiustripper42/crewbook/issues/26) | Events = time slots, needed for write-back |
-| 1.6 | Map orders → events → boats → time slots | 5 | [#27](https://github.com/mobiustripper42/crewbook/issues/27) | Configurable product name lookup per DEC-108 (small live set, designed for growth) |
-| 1.7 | Admin page: "Pull Week" button + display raw reservation data | 3 | [#28](https://github.com/mobiustripper42/crewbook/issues/28) | Table: date, boat, time, guest count, status |
-| 1.8 | Seed staff cross-reference table from Xola guides | 5 | [#29](https://github.com/mobiustripper42/crewbook/issues/29) | Admin UI: list guides, assign role (captain/mate/shore), boat qualifications. Data entry needs to be clean — you'll use this all season. |
+| 1.1 | Xola API client module (auth, base HTTP, error handling, retry) | 5 | [x] 2026-05-19 [PR #30](https://github.com/mobiustripper42/crewbook/pull/30) | First external API. Issue [#22](https://github.com/mobiustripper42/crewbook/issues/22). |
+| 1.2 | Pull experiences (list all, cache locally) | 2 | [x] 2026-05-19 [PR #31](https://github.com/mobiustripper42/crewbook/pull/31) | One GET, store results. Issue [#23](https://github.com/mobiustripper42/crewbook/issues/23). |
+| 1.3 | Pull guides (list all crew in Xola) | 2 | [x] 2026-05-21 [PR #34](https://github.com/mobiustripper42/crewbook/pull/34) | Carried DEC-114 (plugin auth) + XOLA_INTEGRATION.md + paginate helper. Issue [#24](https://github.com/mobiustripper42/crewbook/issues/24). |
+| 1.4 | Pull orders for date range (confirmed only, paginated) | 3 | [x] 2026-05-21 [PR #35](https://github.com/mobiustripper42/crewbook/pull/35) | DEC-115 + skip paginator added. Issue [#25](https://github.com/mobiustripper42/crewbook/issues/25). |
+| 1.5 | Pull events for date range | 3 | [x] 2026-05-22 [PR #36](https://github.com/mobiustripper42/crewbook/pull/36) | DST-aware timezone helper + bare-array response shape discovered. Issue [#26](https://github.com/mobiustripper42/crewbook/issues/26). |
+| 1.6 | Map orders → events → boats → time slots | 5 | [x] 2026-05-27 [PR #41](https://github.com/mobiustripper42/crewbook/pull/41) | DEC-108 product_type_lookup + soft handling. Issue [#27](https://github.com/mobiustripper42/crewbook/issues/27). |
+| 1.7 | Admin page: "Pull Week" button + display raw reservation data | 3 | [x] 2026-05-27 [PR #42](https://github.com/mobiustripper42/crewbook/pull/42) | First UI in project. Issue [#28](https://github.com/mobiustripper42/crewbook/issues/28). |
+| 1.8 | Seed staff cross-reference table from Xola guides | 5 | [x] 2026-05-27 [PR #44](https://github.com/mobiustripper42/crewbook/pull/44) | DEC-116 profile-identity migration + auto-match scorer + admin UI. Issue [#29](https://github.com/mobiustripper42/crewbook/issues/29). |
 
 **Phase 1 total: 28 pts** → ~11.2 hrs at 0.40
 
