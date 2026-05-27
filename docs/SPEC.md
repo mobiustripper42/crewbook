@@ -43,7 +43,7 @@ Multi-role staff are common (a captain who also works shore). Roles are boolean 
 
 - **Shift** — a captain/mate/shore role on a specific boat or dock position, at a specific time slot, on a specific date. Derived from Xola events (DEC-102). Multiple Xola orders can fill one shift (party of 6 + party of 4 in the same brewboat).
 - **Assignment** — a staff member × shift × role binding. Has a status (draft / approved / written-back-to-Xola).
-- **Product type** — internal classification (`brewboat` / `captained_duffy` / `duffy_rental`) determining required crew. 19 Xola product names map to 3 types via an admin-editable lookup table (DEC-108).
+- **Product type** — internal classification (`brewboat` / `captained_duffy` / `duffy_rental`) determining required crew. Xola product names map to these via an admin-editable lookup table (DEC-108). Today the live set is one product (`Brewboat Tour - captained` → `brewboat`); the table accommodates growth without code changes.
 - **Scheduling run** — one agent invocation. Stores inputs, outputs, prompt version. Enables replay and debugging when the agent gets something wrong.
 - **Week** — the unit of scheduling. Admin pulls a week, generates shifts, assigns crew, pushes to Xola — all keyed on the week.
 

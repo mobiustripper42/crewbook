@@ -79,6 +79,24 @@ export type Database = {
           },
         ]
       }
+      product_type_lookup: {
+        Row: {
+          product_type: string
+          updated_at: string
+          xola_name: string
+        }
+        Insert: {
+          product_type: string
+          updated_at?: string
+          xola_name: string
+        }
+        Update: {
+          product_type?: string
+          updated_at?: string
+          xola_name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           boat_quals: Json
