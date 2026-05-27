@@ -99,6 +99,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auth_user_id: string | null
           boat_quals: Json
           created_at: string
           email: string
@@ -109,20 +110,24 @@ export type Database = {
           is_mate: boolean
           is_shore: boolean
           updated_at: string
+          xola_guide_id: string | null
         }
         Insert: {
+          auth_user_id?: string | null
           boat_quals?: Json
           created_at?: string
           email: string
           full_name?: string | null
-          id: string
+          id?: string
           is_admin?: boolean
           is_captain?: boolean
           is_mate?: boolean
           is_shore?: boolean
           updated_at?: string
+          xola_guide_id?: string | null
         }
         Update: {
+          auth_user_id?: string | null
           boat_quals?: Json
           created_at?: string
           email?: string
@@ -133,8 +138,17 @@ export type Database = {
           is_mate?: boolean
           is_shore?: boolean
           updated_at?: string
+          xola_guide_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_xola_guide_id_fkey"
+            columns: ["xola_guide_id"]
+            isOneToOne: true
+            referencedRelation: "xola_guides"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scheduling_runs: {
         Row: {

@@ -38,8 +38,12 @@ values (
 )
 on conflict (id) do nothing;
 
-insert into public.profiles (id, email, full_name, is_admin)
+-- Post-DEC-116: profiles.id is now standalone; auth_user_id links to auth.users.
+-- Keep id stable for any tests/fixtures that hardcode it, and set
+-- auth_user_id to the same uuid so the seeded admin can sign in.
+insert into public.profiles (id, auth_user_id, email, full_name, is_admin)
 values (
+  '00000000-0000-0000-0000-000000000001',
   '00000000-0000-0000-0000-000000000001',
   'admin@brewboat.local',
   'Local Admin',
