@@ -44,6 +44,13 @@ Times are in the seller's wall clock (`America/New_York`, EDT `-04:00` in June).
 Five expected shifts across four boats; eight booked events; one zero-order event
 (`...009`) that intentionally produces no shift.
 
+**Gaps are implicit.** The empty in-run slots (Boat B's 13:00; Boat C's 13:00 and
+15:00) are *not* present as events — under Xola's `reserved=true` pull, an unbooked
+slot returns no event at all, so a gap shows up as missing time on the cadence, not
+as a zero-order event. The lone zero-order event (`...009`) is a *standalone* slot
+exercising rule 4 (booked-only), not rule 3 (gap bridging). 2.1's grader should
+infer gaps from the ~2h cadence, not expect an empty event object to sit in them.
+
 ## Boat resource IDs
 
 | ID | Label |

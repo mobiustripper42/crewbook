@@ -114,4 +114,43 @@ describe("week-2026-06-01 expected — answer key matches the rules", () => {
       assert.equal(new Date(shift.end).getTime(), latest + 2 * 3600 * 1000, `shift on ${shift.date} end mismatch`);
     }
   });
+
+  // Rule 3 — the marquee scenario. A slot is 2h, so one bridged empty slot
+  // means consecutive covered starts are 4h (2 slots) apart; a two-slot gap
+  // (6h+) must split into separate shifts. These two checks are what catches a
+  // regression that merges Boat C's split into one shift or breaks Boat B's
+  // bridge — the start/end math alone would not.
+  const SLOT_MS = 2 * 3600 * 1000;
+
+  it("within a shift, no two consecutive covered events are more than one slot apart (bridges one gap, not two)", () => {
+    for (const shift of expected.shifts) {
+      const starts = shift.covered_event_ids
+        .map((id) => new Date(week.events.find((e) => e.id === id)!.start as string).getTime())
+        .sort((a, b) => a - b);
+      for (let i = 1; i < starts.length; i++) {
+        assert.ok(
+          starts[i] - starts[i - 1] <= 2 * SLOT_MS,
+          `shift on ${shift.date} bridges a >1-slot gap — should have split`,
+        );
+      }
+    }
+  });
+
+  it("two shifts on the same boat+date are separated by more than one slot (two-slot gap split)", () => {
+    const byBoatDate = new Map<string, ExpectedShift[]>();
+    for (const shift of expected.shifts) {
+      const key = `${shift.date}|${shift.boat_resource_id}`;
+      byBoatDate.set(key, [...(byBoatDate.get(key) ?? []), shift]);
+    }
+    for (const [key, group] of byBoatDate) {
+      if (group.length < 2) continue;
+      const ends = group.map((s) => new Date(s.start).getTime()).sort((a, b) => a - b);
+      for (let i = 1; i < ends.length; i++) {
+        assert.ok(
+          ends[i] - ends[i - 1] > 2 * SLOT_MS,
+          `${key} has two shifts within one slot of each other — they should be one shift`,
+        );
+      }
+    }
+  });
 });

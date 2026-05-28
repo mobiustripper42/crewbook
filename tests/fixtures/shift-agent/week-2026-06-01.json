@@ -97,7 +97,7 @@
       "end": "2026-06-04T13:00:00-04:00",
       "seller": { "id": "69dfbe5744e51dad92085ae5" },
       "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
-      "quantity": { "reserved": 1, "confirmed": 0 },
+      "quantity": { "reserved": 0, "confirmed": 0 },
       "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080023" } }]
     }
   ],
