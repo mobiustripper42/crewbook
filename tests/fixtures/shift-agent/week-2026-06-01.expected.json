@@ -1,0 +1,70 @@
+{
+  "week_start": "2026-06-01",
+  "timezone": "America/New_York",
+  "rules_version": "2026-05-28",
+  "shifts": [
+    {
+      "date": "2026-06-01",
+      "boat_resource_id": "6a0fa498081e494f74080020",
+      "product_type": "brewboat",
+      "start": "2026-06-01T11:00:00-04:00",
+      "end": "2026-06-01T17:00:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000001",
+        "6a1000000000000000000002",
+        "6a1000000000000000000003"
+      ],
+      "note": "Boat A — three back-to-back booked slots collapse into one continuous shift."
+    },
+    {
+      "date": "2026-06-02",
+      "boat_resource_id": "6a0fa498081e494f74080021",
+      "product_type": "brewboat",
+      "start": "2026-06-02T11:00:00-04:00",
+      "end": "2026-06-02T17:00:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000004",
+        "6a1000000000000000000005"
+      ],
+      "note": "Boat B — 11:00 and 15:00 booked, 13:00 empty. One-slot gap bridged into a single shift."
+    },
+    {
+      "date": "2026-06-03",
+      "boat_resource_id": "6a0fa498081e494f74080022",
+      "product_type": "brewboat",
+      "start": "2026-06-03T11:00:00-04:00",
+      "end": "2026-06-03T13:00:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000006"
+      ],
+      "note": "Boat C — first half of a two-slot gap. 11:00 booked, then nothing until 17:00 (two empty slots) splits the run."
+    },
+    {
+      "date": "2026-06-03",
+      "boat_resource_id": "6a0fa498081e494f74080022",
+      "product_type": "brewboat",
+      "start": "2026-06-03T17:00:00-04:00",
+      "end": "2026-06-03T19:00:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000007"
+      ],
+      "note": "Boat C — second half of the two-slot gap. Separate shift from the 11:00."
+    },
+    {
+      "date": "2026-06-04",
+      "boat_resource_id": "6a0fa498081e494f74080023",
+      "product_type": "brewboat",
+      "start": "2026-06-04T13:00:00-04:00",
+      "end": "2026-06-04T15:00:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000008"
+      ],
+      "note": "Boat D — single slot filled by two orders (party of 6 + party of 4 = 10 guests). Still one shift. The standalone 11:00 event on Boat D has zero orders and produces NO shift."
+    }
+  ]
+}
