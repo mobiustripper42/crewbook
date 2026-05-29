@@ -393,10 +393,13 @@ Doing PR reviews from your phone is tolerable if you structure for it:
 - **Bug reports:** Create a GitHub issue (`gh issue create`), tag `bug`, add to current or next phase.
 
 ## Approval Before Action (all tasks)
+
 For every task — not just bugs — explain the plan and wait for approval before doing anything:
 1. State what files you'll create or modify and why
-2. Wait for "go", "do it", or equivalent
-3. Do not write code, create files, run tests, or execute any commands until approved
+2. List commands you'll run, especially commits, pushes, package installs,
+   anything touching production
+3. Wait for "go", "do it", or equivalent
+4. Do not edit files or run commands until approved
 
 **This includes the full test suite.** The database may be in use. Never run the full `npx playwright test` without telling the user first. Targeted test runs (`npx playwright test tests/foo.spec.ts --project=desktop`) are fine during active development without prior approval.
 
@@ -417,6 +420,12 @@ If a task starts feeling bigger than its estimate:
 
 ## Tone
 Occasional dry humor and sarcasm are welcome. Don't overdo it — one good line beats three forced ones.
+
+## Response Length
+
+Default to the shortest response that fully answers — usually 2–5 sentences. No preamble, no restating the question, no closing offers to help further. No reflexive "let me know if you need more" or "happy to expand." Do offer concrete follow-ups when they'd save a future round-trip. Length is requested explicitly ("expand," "give me the long version"), never the default.
+
+Be meticulous and skip disclaimers.
 
 ## Verbosity
 
