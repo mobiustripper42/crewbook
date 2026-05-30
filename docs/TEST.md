@@ -27,6 +27,20 @@ This will change. See "When this changes" at the bottom — update this file at 
 
 Per CLAUDE.md: targeted Playwright runs during a task; full suite only when the user asks.
 
+The shift agent's pure surface (prompt assembly, output parsing/validation, grading) is covered by `tests/unit/shift-agent.test.ts` with the model call mocked — no key, no network, runs in CI. The live model behavior is **not** automated; see the agent eval below.
+
+---
+
+## Agent evals (Phase 2+) — live, billed, not in CI
+
+The shift agent's actual output quality is graded against the hand-authored Phase 2.0 answer key:
+
+```
+node --experimental-strip-types scripts/eval-shift-agent.ts
+```
+
+This makes **one real Sonnet call per run** and costs real API money — it is deliberately outside `npm run test:unit` and CI. It reads `ANTHROPIC_API_KEY` from `.env.local`, maps the `tests/fixtures/shift-agent/week-2026-06-01.json` fixture through `lib/xola/mapping.ts`, runs the agent, and grades against `…expected.json`. Exit 0 = output matches the answer key exactly; non-zero prints the mismatches for prompt tuning. Pass a different fixture slug as the first arg to eval another week.
+
 ---
 
 ## Manual verification — local
@@ -40,6 +54,7 @@ For a UI change or a sanity check that "it actually works."
    - `XOLA_PLUGIN_KEY` — sandbox plugin user key (the one ping-tested in Phase 0.6 / 1.1).
    - `XOLA_SELLER_ID=69dfbe5744e51dad92085ae5` — BrewBoat sandbox seller.
    - `XOLA_ENV=sandbox` (default) and `NOTIFICATIONS_ENABLED=false`.
+   - `ANTHROPIC_API_KEY` — server-side key for the shift/assignment agents (DEC-103). Only needed to run the agent eval below; not required for unit tests, build, or the UI.
 
 2. `supabase start` — boots local Postgres + Studio + Kong in Docker. Only one project's Supabase stack can run on this box at a time; check `docker ps | grep supabase` if `db:start` complains. (See memory `feedback_supabase_single_stack`.)
 
