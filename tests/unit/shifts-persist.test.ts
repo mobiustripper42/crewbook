@@ -46,6 +46,20 @@ describe("buildShiftRow", () => {
       /cannot parse local datetime/,
     );
   });
+
+  it("rejects a UTC Z suffix — wall-clock semantics require an explicit offset", () => {
+    assert.throws(
+      () => buildShiftRow({ ...baseShift, start: "2026-06-01T11:00:00Z" }, { weekStart: "2026-06-01", schedulingRunId: "r" }),
+      /expected "YYYY-MM-DDTHH:MM:SS±HH:MM"/,
+    );
+  });
+
+  it("rejects a naive ISO without an offset", () => {
+    assert.throws(
+      () => buildShiftRow({ ...baseShift, start: "2026-06-01T11:00:00" }, { weekStart: "2026-06-01", schedulingRunId: "r" }),
+      /expected "YYYY-MM-DDTHH:MM:SS±HH:MM"/,
+    );
+  });
 });
 
 describe("shouldRegenerate", () => {
@@ -56,7 +70,7 @@ describe("shouldRegenerate", () => {
     const r = shouldRegenerate({ existingCount: 5, force: false });
     assert.equal(r.proceed, false);
     assert.match(r.errorMessage!, /5 shifts already exist/);
-    assert.match(r.errorMessage!, /force=true/);
+    assert.match(r.errorMessage!, /force box/);
   });
   it("pluralizes correctly for 1 existing shift", () => {
     const r = shouldRegenerate({ existingCount: 1, force: false });

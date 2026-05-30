@@ -37,14 +37,24 @@ select is(
 );
 reset role;
 
--- authenticated non-admin (no JWT sub set) must also not read — admin only.
+-- authenticated non-admin (real user, just not flagged is_admin) must also
+-- not read — admin only. Seed a non-admin profile + auth.users row first so
+-- the JWT sub resolves to a real, non-admin user.
+insert into auth.users (id, email)
+  values ('00000000-0000-0000-0000-000000000077', 'non-admin@brewboat.local')
+  on conflict (id) do nothing;
+insert into public.profiles (id, auth_user_id, email, is_admin)
+  values ('00000000-0000-0000-0000-000000000077', '00000000-0000-0000-0000-000000000077', 'non-admin@brewboat.local', false)
+  on conflict (id) do nothing;
 set local role authenticated;
+set local request.jwt.claim.sub = '00000000-0000-0000-0000-000000000077';
 select is(
   (select count(*)::int from public.scheduling_runs),
   0,
-  'non-admin authenticated cannot read scheduling_runs'
+  'non-admin authenticated user cannot read scheduling_runs'
 );
 reset role;
+reset request.jwt.claim.sub;
 
 select * from finish();
 rollback;

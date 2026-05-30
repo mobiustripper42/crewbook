@@ -27,18 +27,20 @@ export function shouldRegenerate({ existingCount, force }: RegenerateGateInput):
   if (force) return { proceed: true };
   return {
     proceed: false,
-    errorMessage: `${existingCount} shift${existingCount === 1 ? "" : "s"} already exist for this week. Pass force=true to regenerate (this will delete the existing shifts).`,
+    errorMessage: `${existingCount} shift${existingCount === 1 ? "" : "s"} already exist for this week. Check the force box and try again to regenerate (this will delete the existing shifts).`,
   };
 }
 
 // Parse "2026-06-01T11:00:00-04:00" → { date: "2026-06-01", time: "11:00:00" }.
-// The ISO is already in seller-local offset (mapper passes through Xola's
-// wall-clock semantics), so we keep the wall-clock date and time as-is and
-// hand them to the date/time columns. No tz library needed.
+// The ISO must carry an explicit `±HH:MM` offset — we treat the wall-clock
+// date and time as-is, and a `Z` suffix or a naive ISO without an offset would
+// silently land at the wrong wall-clock time. Reject both loudly instead.
 function splitLocalIso(iso: string): { date: string; time: string } {
-  const tMatch = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/);
+  const tMatch = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})[-+]\d{2}:\d{2}$/);
   if (!tMatch) {
-    throw new Error(`shift persist: cannot parse local datetime "${iso}"`);
+    throw new Error(
+      `shift persist: cannot parse local datetime "${iso}" — expected "YYYY-MM-DDTHH:MM:SS±HH:MM" (UTC "Z" or naive ISO not accepted)`,
+    );
   }
   return { date: tMatch[1], time: tMatch[2] };
 }

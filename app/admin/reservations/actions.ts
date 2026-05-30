@@ -16,7 +16,9 @@
 
 import { revalidatePath } from "next/cache";
 
+import { AGENT_MODEL } from "@/lib/agents/client";
 import { generateShifts } from "@/lib/agents/shift-agent";
+import { SHIFT_AGENT_PROMPT_VERSION } from "@/lib/agents/shift-agent-prompt";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { buildRunRow, buildShiftRow, shouldRegenerate } from "@/lib/shifts/persist";
 import { syncEvents } from "@/lib/xola/events";
@@ -73,6 +75,14 @@ export interface GenerateShiftsResult {
 }
 
 export async function generateShiftsForWeek(formData: FormData): Promise<GenerateShiftsResult> {
+  // Pre-5.1 cost kill-switch: the action makes a real billed Sonnet call,
+  // and /admin/* has no auth gate until magic-link lands. Set
+  // SHIFT_AGENT_DISABLED=1 in any environment where the action endpoint could
+  // be reached before the auth gate ships.
+  if (process.env.SHIFT_AGENT_DISABLED === "1") {
+    return { ok: false, error: "Shift agent is disabled (SHIFT_AGENT_DISABLED=1)." };
+  }
+
   const mondayRaw = formData.get("monday");
   const monday = typeof mondayRaw === "string" ? mondayRaw : "";
   if (!monday) return { ok: false, error: "monday is required" };
@@ -99,6 +109,9 @@ export async function generateShiftsForWeek(formData: FormData): Promise<Generat
   if (!gate.proceed) return { ok: false, error: gate.errorMessage };
 
   // Load the mirrored slots for the week — same query shape as the page.
+  // TODO(2.5 / pre-prod): date-filter these reads server-side. Today they pull
+  // every row in xola_events / xola_orders, which is fine at sandbox scale (~5
+  // rows) but will time out / OOM the action well before real-volume prod data.
   const [eventsRes, ordersRes, lookupRes] = await Promise.all([
     supabase.from("xola_events").select("raw"),
     supabase.from("xola_orders").select("raw"),
@@ -140,9 +153,12 @@ export async function generateShiftsForWeek(formData: FormData): Promise<Generat
     if (runInsert.error) return { ok: false, error: `scheduling_runs: ${runInsert.error.message}` };
     const runId = runInsert.data.id;
 
-    // If regenerating, wipe the existing week's agent-generated shifts now
-    // (after a successful generation, before insert — minimizes the empty-
-    // week window if the next step fails).
+    // If regenerating, wipe the existing week's agent-generated shifts.
+    // This opens a brief empty-week window between the delete and the insert
+    // below — V1 acceptable; on insert failure, re-run with force=true to
+    // re-attempt. (No transaction support in supabase-js; a server-side fn
+    // is the long-term fix.) Non-force callers can still 23505 on a race
+    // against a row inserted between the count and the insert below.
     if (existingCount > 0 && force) {
       const del = await supabase.from("shifts").delete().eq("week_start", monday);
       if (del.error) return { ok: false, error: `shifts delete: ${del.error.message}`, runId };
@@ -157,17 +173,23 @@ export async function generateShiftsForWeek(formData: FormData): Promise<Generat
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     // Record the failed call so it's not invisible — DEC-103 audit intent.
-    // We don't have model/version unless generateShifts started; capture
-    // what we know and tag with the prompt-version constant.
-    const { AGENT_MODEL } = await import("@/lib/agents/client");
-    const { SHIFT_AGENT_PROMPT_VERSION } = await import("@/lib/agents/shift-agent-prompt");
-    await supabase.from("scheduling_runs").insert(buildRunRow({
-      weekStart: monday,
-      model: AGENT_MODEL,
-      promptVersion: SHIFT_AGENT_PROMPT_VERSION,
-      input: inputSnapshot,
-      error: errorMessage,
-    }));
+    // Wrap the audit insert so its own failure (network blip, RLS regression)
+    // doesn't mask the original error from the caller — surface the model
+    // failure and log the audit failure for ops.
+    try {
+      const auditRes = await supabase.from("scheduling_runs").insert(buildRunRow({
+        weekStart: monday,
+        model: AGENT_MODEL,
+        promptVersion: SHIFT_AGENT_PROMPT_VERSION,
+        input: inputSnapshot,
+        error: errorMessage,
+      }));
+      if (auditRes.error) {
+        console.warn(`[shift-agent] failure-path audit insert failed: ${auditRes.error.message}`);
+      }
+    } catch (auditErr) {
+      console.warn(`[shift-agent] failure-path audit insert threw: ${auditErr instanceof Error ? auditErr.message : String(auditErr)}`);
+    }
     return { ok: false, error: errorMessage };
   }
 }
