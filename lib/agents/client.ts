@@ -9,15 +9,12 @@ import Anthropic from "@anthropic-ai/sdk";
 // to Opus without revisiting DEC-103. Bare ID per the SDK (no date suffix).
 export const AGENT_MODEL = "claude-sonnet-4-6";
 
-let cached: Anthropic | null = null;
-
+// Construct fresh per call. SDK client construction is cheap, and a cached
+// client would silently pin the first key seen even after the env var rotates.
 export function getAnthropicClient(): Anthropic {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY is not set. Required for the BrewBoat agents (DEC-103).");
   }
-  if (!cached) {
-    cached = new Anthropic({ apiKey });
-  }
-  return cached;
+  return new Anthropic({ apiKey });
 }

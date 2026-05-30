@@ -92,8 +92,9 @@ Return only the structured JSON object with the "shifts" array. Do not include c
 
 // Compact, deterministic serialization of a week's slots for the user turn.
 // Sorted by (boat, start) so the same week always renders identical bytes —
-// stable for prompt caching and reproducible evals. Only the fields the agent
-// needs are included; the full TimeSlot carries display-only extras.
+// reproducible evals (the cache_control breakpoint is on the system block;
+// the user turn is not cached). Only fields the agent needs are included;
+// the full TimeSlot carries display-only extras.
 export function buildUserPrompt(
   slots: readonly TimeSlot[],
   weekStart: string,
@@ -150,7 +151,7 @@ function validateShift(s: unknown, index: number): GeneratedShift {
   };
   const roles = o.roles;
   if (!Array.isArray(roles) || roles.length === 0 || !roles.every((r) => typeof r === "string" && VALID_ROLES.has(r))) {
-    throw new Error(`shift[${index}].roles must be a non-empty array of captain|mate|shore`);
+    throw new Error(`shift[${index}].roles must contain at least one of captain|mate|shore`);
   }
   const covered = o.covered_event_ids;
   if (!Array.isArray(covered) || !covered.every((c) => typeof c === "string")) {
