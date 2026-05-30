@@ -69,14 +69,20 @@ async function main(): Promise<void> {
   console.log(`Eval ${slug}: ${slots.length} slots → expecting ${expected.shifts.length} shifts.`);
   console.log("Making 1 live Sonnet call (claude-sonnet-4-6)…\n");
 
-  const generated = await generateShifts({
+  const result = await generateShifts({
     slots,
     weekStart: week.week_start,
     timezone: week.timezone,
   });
-  const report = gradeShifts(generated, expected.shifts);
+  const report = gradeShifts(result.shifts, expected.shifts);
 
   console.log(`Score: ${(report.score * 100).toFixed(0)}%  (${report.matched}/${report.total} shifts exact)`);
+  if (result.usage) {
+    const u = result.usage;
+    console.log(
+      `Usage: input=${u.input_tokens} output=${u.output_tokens} cache_read=${u.cache_read_input_tokens ?? 0} cache_write=${u.cache_creation_input_tokens ?? 0}  (model=${result.model}, prompt=${result.promptVersion})`,
+    );
+  }
   if (report.mismatched.length) {
     console.log(`\nMismatched (${report.mismatched.length}):`);
     for (const m of report.mismatched) console.log(`  ${m.key}\n    - ${m.diffs.join("\n    - ")}`);

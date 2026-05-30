@@ -41,6 +41,17 @@ test.describe("/admin/reservations", () => {
     await expect(page.getByTestId("empty-state")).toBeVisible();
   });
 
+  test("Generate Shifts button is visible and surfaces the no-slots error on an empty week", async ({ page }) => {
+    // Use a week with no mirrored data so the action short-circuits before
+    // calling the live Anthropic API — exercises the wiring without spend.
+    await page.goto("/admin/reservations?week=2024-01-01");
+    const btn = page.getByTestId("generate-shifts");
+    await expect(btn).toBeVisible();
+    await expect(page.getByTestId("generate-shifts-force")).toBeVisible();
+    await btn.click();
+    await expect(page.getByTestId("generate-shifts-error")).toContainText("No mirrored slots");
+  });
+
   test("no Serious or Critical a11y violations on the default view", async ({ page }) => {
     await page.goto("/admin/reservations");
     const results = await new AxeBuilder({ page })

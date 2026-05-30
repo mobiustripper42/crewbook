@@ -16,6 +16,7 @@ import {
 import type { XolaEvent } from "@/lib/xola/events";
 import type { XolaOrder } from "@/lib/xola/orders";
 
+import { GenerateShiftsForm } from "@/components/admin/generate-shifts-form";
 import { PullWeekForm } from "@/components/admin/pull-week-form";
 
 import {
@@ -82,7 +83,10 @@ export default async function AdminReservationsPage({ searchParams }: PageProps)
             )}
           </p>
         </div>
-        <PullWeekForm monday={monday} />
+        <div className="flex flex-col gap-2 sm:items-end">
+          <PullWeekForm monday={monday} />
+          <GenerateShiftsForm monday={monday} />
+        </div>
       </header>
 
       <WeekPicker monday={monday} />
@@ -149,9 +153,14 @@ function EmptyState({ range }: { range: { start: string; end: string } }) {
 
 function SlotsTable({ slots }: { slots: TimeSlot[] }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-border">
+    <div
+      className="overflow-x-auto rounded-md border border-border"
+      tabIndex={0}
+      role="region"
+      aria-label="Reservations table"
+    >
       <table className="w-full text-left text-xs" data-testid="slots-table">
-        <thead className="bg-muted/40 text-muted-foreground">
+        <thead className="bg-muted/40 text-foreground">
           <tr>
             <th className="px-3 py-2 font-medium">Date</th>
             <th className="px-3 py-2 font-medium">Time</th>
@@ -197,7 +206,7 @@ function SlotRow({ slot }: { slot: TimeSlot }) {
           </span>
         )}
         {slot.product_type && (
-          <span className="ml-2 rounded-sm bg-muted px-1.5 py-0.5 text-[0.625rem] text-muted-foreground">
+          <span className="ml-2 rounded-sm bg-muted px-1.5 py-0.5 text-[0.625rem] text-foreground">
             {slot.product_type}
           </span>
         )}

@@ -153,83 +153,124 @@ export type Database = {
       scheduling_runs: {
         Row: {
           agent_version: string
+          cache_creation_input_tokens: number | null
+          cache_read_input_tokens: number | null
           created_at: string
           ended_at: string | null
           error: string | null
           id: string
           input_payload: Json
+          input_tokens: number | null
+          model: string | null
           output_payload: Json | null
+          output_tokens: number | null
           run_type: string
           started_at: string
           triggered_by: string | null
+          week_start: string | null
         }
         Insert: {
           agent_version: string
+          cache_creation_input_tokens?: number | null
+          cache_read_input_tokens?: number | null
           created_at?: string
           ended_at?: string | null
           error?: string | null
           id?: string
           input_payload: Json
+          input_tokens?: number | null
+          model?: string | null
           output_payload?: Json | null
+          output_tokens?: number | null
           run_type: string
           started_at?: string
           triggered_by?: string | null
+          week_start?: string | null
         }
         Update: {
           agent_version?: string
+          cache_creation_input_tokens?: number | null
+          cache_read_input_tokens?: number | null
           created_at?: string
           ended_at?: string | null
           error?: string | null
           id?: string
           input_payload?: Json
+          input_tokens?: number | null
+          model?: string | null
           output_payload?: Json | null
+          output_tokens?: number | null
           run_type?: string
           started_at?: string
           triggered_by?: string | null
+          week_start?: string | null
         }
         Relationships: []
       }
       shifts: {
         Row: {
           boat_label: string | null
+          boat_resource_id: string | null
+          covered_event_ids: string[] | null
           created_at: string
           end_time: string
           id: string
           notes: string | null
           product_type: string
+          roles: Json | null
+          scheduling_run_id: string | null
           shift_date: string
           start_time: string
           status: string
           updated_at: string
+          week_start: string | null
           xola_event_id: string | null
         }
         Insert: {
           boat_label?: string | null
+          boat_resource_id?: string | null
+          covered_event_ids?: string[] | null
           created_at?: string
           end_time: string
           id?: string
           notes?: string | null
           product_type: string
+          roles?: Json | null
+          scheduling_run_id?: string | null
           shift_date: string
           start_time: string
           status?: string
           updated_at?: string
+          week_start?: string | null
           xola_event_id?: string | null
         }
         Update: {
           boat_label?: string | null
+          boat_resource_id?: string | null
+          covered_event_ids?: string[] | null
           created_at?: string
           end_time?: string
           id?: string
           notes?: string | null
           product_type?: string
+          roles?: Json | null
+          scheduling_run_id?: string | null
           shift_date?: string
           start_time?: string
           status?: string
           updated_at?: string
+          week_start?: string | null
           xola_event_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "shifts_scheduling_run_id_fkey"
+            columns: ["scheduling_run_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_runs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       xola_events: {
         Row: {
@@ -465,4 +506,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
