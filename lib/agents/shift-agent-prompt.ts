@@ -62,6 +62,11 @@ export const SHIFT_OUTPUT_SCHEMA = {
   required: ["shifts"],
 } as const;
 
+// Bump on any change to SHIFT_AGENT_SYSTEM_PROMPT, the few-shot, or the output
+// schema. Recorded on every scheduling_runs row so an audit can answer "which
+// prompt produced this shift?" without diffing git history.
+export const SHIFT_AGENT_PROMPT_VERSION = "2.1.0";
+
 export const SHIFT_AGENT_SYSTEM_PROMPT = `You are the shift-generation agent for BrewBoat, a brewery-boat crew scheduler. You turn a week of booked time slots into the crew shifts an operator needs to staff.
 
 # Rules

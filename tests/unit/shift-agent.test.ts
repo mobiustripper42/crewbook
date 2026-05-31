@@ -112,20 +112,29 @@ describe("parseShiftAgentOutput", () => {
 });
 
 describe("generateShifts — injected responder", () => {
-  it("builds the prompt, calls the responder, and parses the reply", async () => {
+  it("builds the prompt, calls the responder, parses, and surfaces usage + prompt version", async () => {
     let captured: ShiftResponderRequest | null = null;
     const slots = [slot({ event_id: "e1", start: "2026-06-01T11:00:00-04:00" })];
+    const usage = {
+      input_tokens: 1234,
+      output_tokens: 200,
+      cache_read_input_tokens: 1000,
+      cache_creation_input_tokens: null,
+    };
     const result = await generateShifts({
       slots,
       weekStart: "2026-06-01",
       responder: async (req) => {
         captured = req;
-        return JSON.stringify({ shifts: [shift({ covered_event_ids: ["e1"] })] });
+        return { raw: JSON.stringify({ shifts: [shift({ covered_event_ids: ["e1"] })] }), usage };
       },
     });
 
-    assert.equal(result.length, 1);
-    assert.deepEqual(result[0].covered_event_ids, ["e1"]);
+    assert.equal(result.shifts.length, 1);
+    assert.deepEqual(result.shifts[0].covered_event_ids, ["e1"]);
+    assert.equal(result.model, "claude-sonnet-4-6");
+    assert.equal(result.promptVersion, "2.1.0");
+    assert.deepEqual(result.usage, usage);
     const req = captured as ShiftResponderRequest | null;
     if (!req) throw new Error("responder was not called");
     assert.equal(req.system, SHIFT_AGENT_SYSTEM_PROMPT);
@@ -133,12 +142,22 @@ describe("generateShifts — injected responder", () => {
     assert.match(req.userPrompt, /"event_id": "e1"/);
   });
 
+  it("usage is optional — responders without usage data still produce shifts", async () => {
+    const result = await generateShifts({
+      slots: [slot({ event_id: "e1", start: "2026-06-01T11:00:00-04:00" })],
+      weekStart: "2026-06-01",
+      responder: async () => ({ raw: JSON.stringify({ shifts: [shift({ covered_event_ids: ["e1"] })] }) }),
+    });
+    assert.equal(result.shifts.length, 1);
+    assert.equal(result.usage, undefined);
+  });
+
   it("propagates a parse failure from a malformed reply", async () => {
     await assert.rejects(
       generateShifts({
         slots: [slot({ event_id: "e1", start: "2026-06-01T11:00:00-04:00" })],
         weekStart: "2026-06-01",
-        responder: async () => "{ broken",
+        responder: async () => ({ raw: "{ broken" }),
       }),
       /non-JSON/,
     );

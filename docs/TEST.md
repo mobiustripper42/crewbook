@@ -67,7 +67,7 @@ For a UI change or a sanity check that "it actually works."
 3. Hit `mill-dev:3000` (not `localhost` — Tailscale-routed review devices need the hostname; see memory `feedback_localhost_via_tailscale`).
 4. Pages worth knowing:
    - `/` — placeholder home with the dark-mode toggle (`d` key).
-   - `/admin/reservations` — Pull Week + reservation table. Default lands on the seeded sandbox week (2026-05-18). `?week=YYYY-MM-DD` snaps to that Monday's week.
+   - `/admin/reservations` — Pull Week + reservation table + **Generate Shifts** (Phase 2.2: calls the shift agent, persists to `shifts` + `scheduling_runs`). Default lands on the seeded sandbox week (2026-05-18). `?week=YYYY-MM-DD` snaps to that Monday's week. The Generate Shifts button costs one real Sonnet call per click on a week that has mirrored slots — use a non-seeded week first if you want to exercise the no-slots error path without spend. Regenerate is gated: tick the **force** checkbox to overwrite an existing week's shifts.
 5. **Mobile check** — open Chrome DevTools, toggle device toolbar, set to 375px. Most regressions show up here first; Playwright covers the gate but eyeballs catch the rest.
 
 ### Data state
@@ -78,6 +78,7 @@ The local Supabase mirror has seeded data from the Session 8 sandbox sync:
 - `xola_guides` — 1 guide (Eric Stoffer, `email: null` — gotcha for Phase 1.8).
 - `xola_experiences` — 200 rows (mostly sandbox-contamination from other tenants per Session 7; Drew's prod will be ~20).
 - `product_type_lookup` — 1 row (`Brewboat Tour - captained` → `brewboat`).
+- `shifts` / `scheduling_runs` — empty until you click **Generate Shifts** on a week with mirrored slots. Each click writes one `scheduling_runs` row (success OR failure — audit) plus N `shifts` rows on success. `supabase db reset` wipes them.
 
 Hitting the **Pull Week** button re-syncs the same data idempotently from Xola sandbox. The sandbox currently has zero orders for any seller other than the 5 seeded ones; live volume only materializes when (a) Eric seeds more sandbox data, or (b) Phase 6.4 cuts over to prod Xola.
 
