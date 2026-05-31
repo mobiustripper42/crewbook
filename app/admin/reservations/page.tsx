@@ -6,6 +6,8 @@
 // effectively open and reads via the service-role client. Don't link to it
 // from public pages, and treat anything sensitive as still un-built.
 
+import Link from "next/link";
+
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import {
   lookupFromEntries,
@@ -82,6 +84,13 @@ export default async function AdminReservationsPage({ searchParams }: PageProps)
               <span className="italic">(showing seeded sandbox week)</span>
             )}
           </p>
+          <Link
+            href={`/admin/shifts?week=${monday}`}
+            className="text-xs text-foreground underline-offset-2 hover:underline"
+            data-testid="view-shifts"
+          >
+            View generated shifts →
+          </Link>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
           <PullWeekForm monday={monday} />
