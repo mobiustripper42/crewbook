@@ -14,10 +14,7 @@ import { groupShiftsByDay, type ShiftRow } from "@/lib/shifts/display";
 
 import { ShiftDayGroupSection } from "@/components/admin/shift-day-group";
 
-import { startOfWeek, weekRange } from "../reservations/week";
-
-// Same default as /admin/reservations so both pages land on the seeded week.
-const DEFAULT_MONDAY = "2026-05-18";
+import { DEFAULT_MONDAY, startOfWeek, weekRange } from "../reservations/week";
 
 interface PageProps {
   searchParams: Promise<{ week?: string }>;
@@ -79,7 +76,7 @@ export default async function AdminShiftsPage({ searchParams }: PageProps) {
         </div>
       )}
 
-      {groups.length === 0 ? (
+      {shiftsRes.error ? null : groups.length === 0 ? (
         <EmptyState monday={monday} range={range} />
       ) : (
         <div className="flex flex-col gap-5" data-testid="shifts-list">

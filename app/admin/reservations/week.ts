@@ -2,6 +2,10 @@
 
 import type { TimeSlot } from "@/lib/xola/mapping";
 
+// Default week both admin views (reservations + shifts) land on — the seeded
+// sandbox week. Swap to "current week" once prod data flows.
+export const DEFAULT_MONDAY = "2026-05-18";
+
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 // Snap an ISO date (YYYY-MM-DD) to the Monday of its ISO week. We treat

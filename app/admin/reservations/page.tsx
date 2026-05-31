@@ -22,6 +22,7 @@ import { GenerateShiftsForm } from "@/components/admin/generate-shifts-form";
 import { PullWeekForm } from "@/components/admin/pull-week-form";
 
 import {
+  DEFAULT_MONDAY,
   filterSlotsInWeek,
   shortResourceId,
   sortSlotsForDisplay,
@@ -29,10 +30,6 @@ import {
   summarizeStatuses,
   weekRange,
 } from "./week";
-
-// Default to the seeded sandbox week so the page shows real data on first
-// load. Swap to "current week" once prod data flows.
-const DEFAULT_MONDAY = "2026-05-18";
 
 interface PageProps {
   searchParams: Promise<{ week?: string }>;
