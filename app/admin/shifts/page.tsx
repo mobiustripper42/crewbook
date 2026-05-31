@@ -1,6 +1,7 @@
-// Phase 2.3 — Shift review UI. Read-only view of agent-generated shifts for one
-// week, grouped by day, so the admin can scan what the shift agent produced
-// before editing (2.4) and posting back to Xola (Phase 6).
+// Phase 2.3 — Shift review UI; Phase 2.4 — editing (delete + merge). Week view
+// of agent-generated shifts, grouped by day, so the admin can scan what the
+// shift agent produced, fix collapse mistakes (merge), drop bad rows (delete),
+// and later post back to Xola (Phase 6).
 //
 // Auth: admin-only conceptually; real auth (magic link + profiles.is_admin)
 // lands in Phase 5.1. Until then this reads via the service-role client and is
@@ -12,7 +13,7 @@ import Link from "next/link";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { groupShiftsByDay, type ShiftRow } from "@/lib/shifts/display";
 
-import { ShiftDayGroupSection } from "@/components/admin/shift-day-group";
+import { ShiftEditor } from "@/components/admin/shift-editor";
 
 import { DEFAULT_MONDAY, startOfWeek, weekRange } from "../reservations/week";
 
@@ -79,11 +80,7 @@ export default async function AdminShiftsPage({ searchParams }: PageProps) {
       {shiftsRes.error ? null : groups.length === 0 ? (
         <EmptyState monday={monday} range={range} />
       ) : (
-        <div className="flex flex-col gap-5" data-testid="shifts-list">
-          {groups.map((group) => (
-            <ShiftDayGroupSection key={group.date} group={group} />
-          ))}
-        </div>
+        <ShiftEditor groups={groups} />
       )}
     </main>
   );
