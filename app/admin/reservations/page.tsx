@@ -6,6 +6,8 @@
 // effectively open and reads via the service-role client. Don't link to it
 // from public pages, and treat anything sensitive as still un-built.
 
+import Link from "next/link";
+
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import {
   lookupFromEntries,
@@ -20,6 +22,7 @@ import { GenerateShiftsForm } from "@/components/admin/generate-shifts-form";
 import { PullWeekForm } from "@/components/admin/pull-week-form";
 
 import {
+  DEFAULT_MONDAY,
   filterSlotsInWeek,
   shortResourceId,
   sortSlotsForDisplay,
@@ -27,10 +30,6 @@ import {
   summarizeStatuses,
   weekRange,
 } from "./week";
-
-// Default to the seeded sandbox week so the page shows real data on first
-// load. Swap to "current week" once prod data flows.
-const DEFAULT_MONDAY = "2026-05-18";
 
 interface PageProps {
   searchParams: Promise<{ week?: string }>;
@@ -82,6 +81,13 @@ export default async function AdminReservationsPage({ searchParams }: PageProps)
               <span className="italic">(showing seeded sandbox week)</span>
             )}
           </p>
+          <Link
+            href={`/admin/shifts?week=${monday}`}
+            className="text-xs text-foreground underline-offset-2 hover:underline"
+            data-testid="view-shifts"
+          >
+            View generated shifts →
+          </Link>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
           <PullWeekForm monday={monday} />

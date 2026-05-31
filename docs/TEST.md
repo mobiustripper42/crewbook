@@ -73,7 +73,7 @@ For a UI change or a sanity check that "it actually works."
 ### Data state
 
 The local Supabase mirror has seeded data from the Session 8 sandbox sync:
-- `xola_events` — 5 events for the week of 2026-05-18, all on the brewboat experience.
+- `xola_events` — 5 events total, all on the brewboat experience: 1 in the week of 2026-05-18 (the default `/admin/reservations` week — clicking Generate Shifts there yields 1 shift) and 4 on Saturday 2026-06-06 (week of 2026-06-01; use `?week=2026-06-01` to exercise the multi-event path).
 - `xola_orders` — 5 orders, one per event, status 200 (confirmed).
 - `xola_guides` — 1 guide (Eric Stoffer, `email: null` — gotcha for Phase 1.8).
 - `xola_experiences` — 200 rows (mostly sandbox-contamination from other tenants per Session 7; Drew's prod will be ~20).
