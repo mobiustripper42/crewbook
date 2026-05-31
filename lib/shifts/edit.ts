@@ -74,6 +74,9 @@ export function buildMergedShift(shifts: ShiftRow[]): MergeResult {
       scheduling_run_id: first.scheduling_run_id,
       notes: shifts.find((s) => s.notes)?.notes ?? null,
       status: "draft",
+      // xola_event_id is intentionally left default-null: agent-generated shifts
+      // track coverage via covered_event_ids (above), not the legacy single-event
+      // pointer, so there's nothing to carry across a merge.
     },
   };
 }

@@ -9,12 +9,24 @@
 // client-supplied times — no Xola re-pull, just a keyed read of the shifts
 // table. Split is deferred to a follow-up task.
 //
-// No transactions in supabase-js. A unique index on
-// (week_start, boat_resource_id, start_time) — the 2.2 idempotency anchor —
-// means the merged row can collide with a source that shares its start_time, so
-// the sources must be deleted BEFORE the merged row is inserted. To avoid data
-// loss if that insert then fails, we snapshot the originals and re-insert them
+// No transactions in supabase-js. A *partial* unique index on
+// (week_start, boat_resource_id, start_time) WHERE both are non-null — the 2.2
+// idempotency anchor — means a merged row collides with a source that shares its
+// start_time (agent-generated rows always have week_start + boat set), so the
+// sources must be deleted BEFORE the merged row is inserted. To limit data loss
+// if that insert then fails, we snapshot the originals and re-insert them
 // (best-effort rollback).
+//
+// Known limitations until merge moves to a Postgres RPC (revisit before Phase 3
+// — flag for @architect):
+//   1. The rollback re-insert is itself unguarded: if a concurrent generate/merge
+//      re-took a freed (week, boat, start) slot, the restore fails → true data
+//      loss. Tolerable for the single-admin, pre-Phase-5.1 window.
+//   2. assignments.shift_id is ON DELETE CASCADE — once Phase 3 wires staff
+//      assignments, deleting/merging a shift cascade-deletes its assignments, and
+//      rollback restores the shift rows but NOT the cascaded assignments. Merge
+//      and delete are assignment-lossy by construction today; harmless only
+//      because no assignments exist yet.
 
 import { revalidatePath } from "next/cache";
 
