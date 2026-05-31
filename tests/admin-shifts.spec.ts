@@ -41,6 +41,9 @@ test.describe("/admin/shifts", () => {
         end_time: "11:00:00",
         product_type: "brewboat",
         boat_label: TEST_BOAT_LABEL,
+        // Same boat_resource_id as the afternoon shift below so the two Monday
+        // shifts are a valid merge target (same day + boat + product).
+        boat_resource_id: "test-resource-aaaa11112222",
         roles: ["captain", "mate"],
         covered_event_ids: ["test-evt-1", "test-evt-2"],
         status: "draft",
@@ -112,6 +115,48 @@ test.describe("/admin/shifts", () => {
       "href",
       `/admin/reservations?week=${TEST_MONDAY}`,
     );
+  });
+
+  test("deletes a shift after an inline confirm", async ({ page }) => {
+    await page.goto(`/admin/shifts?week=${TEST_MONDAY}`);
+    await expect(page.getByTestId("shift-card")).toHaveCount(3);
+
+    const firstCard = page.getByTestId("shift-card").first();
+    await firstCard.getByTestId("shift-delete").click();
+    await firstCard.getByTestId("shift-delete-confirm").click();
+
+    await expect(page.getByTestId("shift-card")).toHaveCount(2);
+  });
+
+  test("merges two same-day same-boat shifts into one spanning the full range", async ({ page }) => {
+    await page.goto(`/admin/shifts?week=${TEST_MONDAY}`);
+
+    // Select both Monday shifts (same boat, same product → mergeable).
+    const monday = page.getByTestId("shift-day-group").first();
+    await monday.getByTestId("shift-select").nth(0).check();
+    await monday.getByTestId("shift-select").nth(1).check();
+
+    await page.getByTestId("merge-selected").click();
+
+    // Monday collapses to 1 card; Tuesday's still there → 2 total.
+    await expect(page.getByTestId("shift-card")).toHaveCount(2);
+    const merged = page.getByTestId("shift-day-group").first().getByTestId("shift-card").first();
+    await expect(merged.getByTestId("shift-time")).toContainText("09:00–15:00");
+    await expect(merged.getByTestId("shift-coverage")).toContainText("3 events");
+  });
+
+  test("refuses to merge shifts across different days", async ({ page }) => {
+    await page.goto(`/admin/shifts?week=${TEST_MONDAY}`);
+
+    // One Monday card + the Tuesday card → not the same day.
+    await page.getByTestId("shift-select").first().check();
+    await page.getByTestId("shift-select").last().check();
+
+    await page.getByTestId("merge-selected").click();
+
+    await expect(page.getByTestId("shift-edit-error")).toContainText("same day");
+    // Nothing was merged or deleted.
+    await expect(page.getByTestId("shift-card")).toHaveCount(3);
   });
 
   test("no Serious or Critical a11y violations", async ({ page }) => {
