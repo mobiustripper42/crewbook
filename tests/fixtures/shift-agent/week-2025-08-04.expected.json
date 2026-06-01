@@ -1,0 +1,46 @@
+{
+  "week_start": "2025-08-04",
+  "timezone": "America/New_York",
+  "rules_version": "2026-05-28",
+  "shifts": [
+    {
+      "date": "2025-08-04",
+      "boat_resource_id": "6a0fa498081e494f74080020",
+      "product_type": "brewboat",
+      "start": "2025-08-04T11:30:00-04:00",
+      "end": "2025-08-04T19:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000201",
+        "6a1000000000000000000202",
+        "6a1000000000000000000203",
+        "6a1000000000000000000204"
+      ],
+      "note": "Boat A — a full four-slot run (11:30→17:30 starts) collapses into one continuous shift ending 19:30."
+    },
+    {
+      "date": "2025-08-05",
+      "boat_resource_id": "6a0fa498081e494f74080020",
+      "product_type": "brewboat",
+      "start": "2025-08-05T15:30:00-04:00",
+      "end": "2025-08-05T17:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000205"
+      ],
+      "note": "Boat A — a single isolated 15:30 booking is a minimal one-slot, 2-hour shift."
+    },
+    {
+      "date": "2025-08-05",
+      "boat_resource_id": "6a0fa498081e494f74080021",
+      "product_type": "brewboat",
+      "start": "2025-08-05T11:30:00-04:00",
+      "end": "2025-08-05T13:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000206"
+      ],
+      "note": "Boat B — single 11:30 slot filled by two orders (party of 4 + party of 2 = 6 guests). Two orders, still one shift."
+    }
+  ]
+}

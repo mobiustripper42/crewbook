@@ -1,0 +1,83 @@
+{
+  "week_start": "2025-06-09",
+  "timezone": "America/New_York",
+  "rules_version": "2026-05-28",
+  "shifts": [
+    {
+      "date": "2025-06-09",
+      "boat_resource_id": "6a0fa498081e494f74080020",
+      "product_type": "brewboat",
+      "start": "2025-06-09T11:30:00-04:00",
+      "end": "2025-06-09T17:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000101",
+        "6a1000000000000000000102",
+        "6a1000000000000000000103"
+      ],
+      "note": "Boat A — three back-to-back booked slots (11:30/13:30/15:30) collapse into one continuous shift."
+    },
+    {
+      "date": "2025-06-09",
+      "boat_resource_id": "6a0fa498081e494f74080021",
+      "product_type": "brewboat",
+      "start": "2025-06-09T11:30:00-04:00",
+      "end": "2025-06-09T15:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000104",
+        "6a1000000000000000000105"
+      ],
+      "note": "Boat B — 11:30 + 13:30 back-to-back, runs in parallel with Boat A. Never combined with A (rule 6)."
+    },
+    {
+      "date": "2025-06-09",
+      "boat_resource_id": "6a0fa498081e494f74080022",
+      "product_type": "brewboat",
+      "start": "2025-06-09T13:30:00-04:00",
+      "end": "2025-06-09T15:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000106"
+      ],
+      "note": "Boat C — single 13:30 slot, parallel with A and B. Three distinct shifts on one day across three boats."
+    },
+    {
+      "date": "2025-06-10",
+      "boat_resource_id": "6a0fa498081e494f74080020",
+      "product_type": "brewboat",
+      "start": "2025-06-10T11:30:00-04:00",
+      "end": "2025-06-10T17:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000107",
+        "6a1000000000000000000108"
+      ],
+      "note": "Boat A — 11:30 + 15:30 booked, 13:30 empty. One-slot gap bridged into a single shift (rule 3)."
+    },
+    {
+      "date": "2025-06-10",
+      "boat_resource_id": "6a0fa498081e494f74080021",
+      "product_type": "brewboat",
+      "start": "2025-06-10T11:30:00-04:00",
+      "end": "2025-06-10T13:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000109"
+      ],
+      "note": "Boat B — first half of a two-slot gap. 11:30 booked, then nothing until 17:30 (13:30 + 15:30 empty) splits the run."
+    },
+    {
+      "date": "2025-06-10",
+      "boat_resource_id": "6a0fa498081e494f74080021",
+      "product_type": "brewboat",
+      "start": "2025-06-10T17:30:00-04:00",
+      "end": "2025-06-10T19:30:00-04:00",
+      "roles": ["captain", "mate"],
+      "covered_event_ids": [
+        "6a1000000000000000000110"
+      ],
+      "note": "Boat B — second half of the two-slot gap. Separate shift from the 11:30."
+    }
+  ]
+}
