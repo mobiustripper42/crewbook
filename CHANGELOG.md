@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.8] - 2026-06-01
+- PR #59: Phase 2.5 — multi-week shift-agent eval harness + realistic 2025 fixtures (issue #49)
+
 ## [0.2.7] - 2026-06-01
 - PR #57: Phase 2.4 — shift editing: delete + merge shifts before posting (issue #48)
 
