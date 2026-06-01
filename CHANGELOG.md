@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.7] - 2026-06-01
+- PR #57: Phase 2.4 — shift editing: delete + merge shifts before posting (issue #48)
+
 ## [0.2.6] - 2026-06-01
 - PR #55: Phase 2.3 — shift review UI: list generated shifts by week, grouped by day (issue #47)
 
