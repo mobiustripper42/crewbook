@@ -1,4 +1,8 @@
 # Changelog
+## [0.3.0] - 2026-06-01 — Phase 2
+- 24 pts shipped across 2 sessions (0.23 hrs/pt dev)
+- See `docs/RETROSPECTIVES.md` for the full retro
+
 ## [0.2.8] - 2026-06-01
 - PR #59: Phase 2.5 — multi-week shift-agent eval harness + realistic 2025 fixtures (issue #49)
 
