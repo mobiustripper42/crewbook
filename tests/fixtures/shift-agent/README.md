@@ -51,6 +51,69 @@ as a zero-order event. The lone zero-order event (`...009`) is a *standalone* sl
 exercising rule 4 (booked-only), not rule 3 (gap bridging). 2.1's grader should
 infer gaps from the ~2h cadence, not expect an empty event object to sit in them.
 
+## `week-2025-06-09` scenarios (task 2.5)
+
+Modeled on the real 2025 manifest shape: `:30` cadence (11:30 / 13:30 / 15:30 /
+17:30 / 19:30) and multiple boats running in parallel on the same day — neither
+of which the 2.0 week exercised.
+
+| Day | Boat | Booked slots | Expected | Rule exercised |
+|-----|------|-------------|----------|----------------|
+| Mon 06-09 | A | 11:30, 13:30, 15:30 | 1 shift 11:30–17:30 | same-boat run (rule 1) |
+| Mon 06-09 | B | 11:30, 13:30 | 1 shift 11:30–15:30 | parallel boat, no cross-combine (rule 6) |
+| Mon 06-09 | C | 13:30 | 1 shift 13:30–15:30 | third parallel boat, same day |
+| Tue 06-10 | A | 11:30, 15:30 (13:30 empty) | 1 shift 11:30–17:30 | one-slot gap bridged (rule 3) |
+| Tue 06-10 | B | 11:30, 17:30 (13:30, 15:30 empty) | 2 shifts: 11:30–13:30, 17:30–19:30 | two-slot gap splits (rule 3) |
+
+Six expected shifts; the marquee case is **three boats in parallel on Monday** —
+the agent must emit three distinct shifts and never merge across boats.
+
+## `week-2025-08-04` scenarios (task 2.5)
+
+Edge cases at `:30` cadence.
+
+| Day | Boat | Booked slots | Expected | Rule exercised |
+|-----|------|-------------|----------|----------------|
+| Mon 08-04 | A | 11:30, 13:30, 15:30, 17:30 | 1 shift 11:30–19:30 | long four-slot continuous run (rule 1) |
+| Tue 08-05 | A | 15:30 | 1 shift 15:30–17:30 | isolated single-slot shift |
+| Tue 08-05 | B | 11:30 (two orders) | 1 shift 11:30–13:30 | multi-order guest summing (4 + 2 = 6) |
+
+## Validating against real 2025 data — deferred to Phase 6.4
+
+These three weeks are **synthetic** — hand-authored, human-verified, and modeled
+on the real 2025 booking patterns, but not real bookings. True validation against
+real history needs the per-slot **boat/resource id** (`resourceUsages` on each
+event), and Xola's report exports do not emit it — only the events API carries
+it, and the real 2025 events live in prod, which we don't connect to until the
+Phase 6.4 cutover. At 6.4, pull a handful of real 2025 weeks via the events API,
+drop them in as `week-*.json`, author keys from the actual guide assignments
+(the manifest CSV has those), and the multi-week eval grades them automatically.
+
+> The agent input does not currently carry order **status**, so a slot whose only
+> order is cancelled (700) still counts as booked (`order_count ≥ 1`) and would be
+> scheduled. Handling cancellations needs a `confirmed_count` on the slot + a
+> prompt rule + a version bump — tracked as a separate follow-up, not in 2.5.
+
+## Current eval baseline
+
+At `temperature: 0` (set in 2.5 for reproducibility), the agent scores **13/14
+(93%)**: `week-2026-06-01` and `week-2025-08-04` pass 100%; `week-2025-06-09`
+misses one shift — the Tue 06-10 Boat A one-slot-gap bridge (rule 3) splits
+instead of bridging. Reproducible, not variance. Tracked in
+[#58](https://github.com/mobiustripper42/crewbook/issues/58) — a prompt fix, out
+of 2.5 scope. The eval exiting non-zero on that week is expected until #58 lands.
+
+## Running the eval
+
+```
+node --experimental-strip-types scripts/eval-shift-agent.ts            # grade ALL weeks
+node --experimental-strip-types scripts/eval-shift-agent.ts week-2025-06-09   # one week
+```
+
+One **billed** Sonnet call per week (DEC-103). Not part of the test suite. The
+offline answer-key integrity checks live in `tests/unit/shift-fixture.test.ts`
+and run for free on every `npm run test:unit`.
+
 ## Boat resource IDs
 
 | ID | Label |

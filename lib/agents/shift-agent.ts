@@ -68,6 +68,11 @@ async function defaultResponder({ system, userPrompt, model }: ShiftResponderReq
   const message = await client.messages.create({
     model,
     max_tokens: MAX_OUTPUT_TOKENS,
+    // Deterministic: shift generation is rules-driven extraction, not creative
+    // writing. temp 0 maximizes consistency and makes the 2.5 eval reproducible
+    // (default 1.0 made single-run grading noisy — it intermittently missed the
+    // one-slot-gap bridge in busier weeks).
+    temperature: 0,
     system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
     messages: [{ role: "user", content: userPrompt }],
     output_config: { format: { type: "json_schema", schema: SHIFT_OUTPUT_SCHEMA } },

@@ -1,0 +1,176 @@
+{
+  "week_start": "2025-06-09",
+  "timezone": "America/New_York",
+  "seller_id": "69dfbe5744e51dad92085ae5",
+  "experience_id": "6a0f4923822a6545cf0e1cfb",
+  "_note": "Phase 2.5 fixture. Modeled on the real 2025 manifest shape: :30 cadence (11:30/13:30/15:30/17:30/19:30) and multiple boats running in parallel on the same day. Synthetic boat ids + guests. Mon 06-09 = three boats in parallel (rule 6: never combine across boats); Tue 06-10 = one bridged one-slot gap (Boat A) + one two-slot split (Boat B). Empty cadence slots are absent as events, per the reserved=true pull.",
+  "boats": {
+    "6a0fa498081e494f74080020": "Boat A",
+    "6a0fa498081e494f74080021": "Boat B",
+    "6a0fa498081e494f74080022": "Boat C"
+  },
+  "events": [
+    {
+      "id": "6a1000000000000000000101",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T11:30:00-04:00",
+      "end": "2025-06-09T13:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080020" } }]
+    },
+    {
+      "id": "6a1000000000000000000102",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T13:30:00-04:00",
+      "end": "2025-06-09T15:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080020" } }]
+    },
+    {
+      "id": "6a1000000000000000000103",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T15:30:00-04:00",
+      "end": "2025-06-09T17:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080020" } }]
+    },
+    {
+      "id": "6a1000000000000000000104",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T11:30:00-04:00",
+      "end": "2025-06-09T13:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080021" } }]
+    },
+    {
+      "id": "6a1000000000000000000105",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T13:30:00-04:00",
+      "end": "2025-06-09T15:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080021" } }]
+    },
+    {
+      "id": "6a1000000000000000000106",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-09T13:30:00-04:00",
+      "end": "2025-06-09T15:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080022" } }]
+    },
+    {
+      "id": "6a1000000000000000000107",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-10T11:30:00-04:00",
+      "end": "2025-06-10T13:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080020" } }]
+    },
+    {
+      "id": "6a1000000000000000000108",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-10T15:30:00-04:00",
+      "end": "2025-06-10T17:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080020" } }]
+    },
+    {
+      "id": "6a1000000000000000000109",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-10T11:30:00-04:00",
+      "end": "2025-06-10T13:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080021" } }]
+    },
+    {
+      "id": "6a1000000000000000000110",
+      "title": "Brewboat Tour - captained",
+      "start": "2025-06-10T17:30:00-04:00",
+      "end": "2025-06-10T19:30:00-04:00",
+      "seller": { "id": "69dfbe5744e51dad92085ae5" },
+      "experience": { "id": "6a0f4923822a6545cf0e1cfb" },
+      "quantity": { "reserved": 1, "confirmed": 1 },
+      "resourceUsages": [{ "count": 1, "resource": { "id": "6a0fa498081e494f74080021" } }]
+    }
+  ],
+  "orders": [
+    {
+      "id": "6a2000000000000000000101",
+      "items": [
+        { "id": "item-0101", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000101" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0101-1", "name": "Adults #1" }, { "id": "g-0101-2", "name": "Adults #2" }, { "id": "g-0101-3", "name": "Adults #3" }, { "id": "g-0101-4", "name": "Adults #4" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000102",
+      "items": [
+        { "id": "item-0102", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000102" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0102-1", "name": "Adults #1" }, { "id": "g-0102-2", "name": "Adults #2" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000103",
+      "items": [
+        { "id": "item-0103", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000103" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0103-1", "name": "Adults #1" }, { "id": "g-0103-2", "name": "Adults #2" }, { "id": "g-0103-3", "name": "Adults #3" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000104",
+      "items": [
+        { "id": "item-0104", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000104" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0104-1", "name": "Adults #1" }, { "id": "g-0104-2", "name": "Adults #2" }, { "id": "g-0104-3", "name": "Adults #3" }, { "id": "g-0104-4", "name": "Adults #4" }, { "id": "g-0104-5", "name": "Adults #5" }, { "id": "g-0104-6", "name": "Adults #6" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000105",
+      "items": [
+        { "id": "item-0105", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000105" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0105-1", "name": "Adults #1" }, { "id": "g-0105-2", "name": "Adults #2" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000106",
+      "items": [
+        { "id": "item-0106", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000106" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-09", "quantity": 1, "guests": [{ "id": "g-0106-1", "name": "Adults #1" }, { "id": "g-0106-2", "name": "Adults #2" }, { "id": "g-0106-3", "name": "Adults #3" }, { "id": "g-0106-4", "name": "Adults #4" }, { "id": "g-0106-5", "name": "Adults #5" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000107",
+      "items": [
+        { "id": "item-0107", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000107" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-10", "quantity": 1, "guests": [{ "id": "g-0107-1", "name": "Adults #1" }, { "id": "g-0107-2", "name": "Adults #2" }, { "id": "g-0107-3", "name": "Adults #3" }, { "id": "g-0107-4", "name": "Adults #4" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000108",
+      "items": [
+        { "id": "item-0108", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000108" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-10", "quantity": 1, "guests": [{ "id": "g-0108-1", "name": "Adults #1" }, { "id": "g-0108-2", "name": "Adults #2" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000109",
+      "items": [
+        { "id": "item-0109", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000109" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-10", "quantity": 1, "guests": [{ "id": "g-0109-1", "name": "Adults #1" }, { "id": "g-0109-2", "name": "Adults #2" }, { "id": "g-0109-3", "name": "Adults #3" }] }
+      ]
+    },
+    {
+      "id": "6a2000000000000000000110",
+      "items": [
+        { "id": "item-0110", "name": "Brewboat Tour - captained", "event": { "id": "6a1000000000000000000110" }, "experience": { "id": "6a0f4923822a6545cf0e1cfb" }, "seller": { "id": "69dfbe5744e51dad92085ae5" }, "status": 200, "arrival": "2025-06-10", "quantity": 1, "guests": [{ "id": "g-0110-1", "name": "Adults #1" }, { "id": "g-0110-2", "name": "Adults #2" }, { "id": "g-0110-3", "name": "Adults #3" }] }
+      ]
+    }
+  ]
+}

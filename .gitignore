@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Misc
 *.pem
+
+# Local-only raw Xola exports (real customer PII — never commit; converted to slim fixtures via scripts/build-shift-fixtures.ts)
+tests/fixtures/local/
