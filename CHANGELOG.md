@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.3] - 2026-06-01
+- PR #53: Phase 2.1 — shift-generation agent: prompt + structured output (issue #45)
+
 ## [0.2.2] - 2026-06-01
 - PR #52: auto-sync downstream — 2026-05-29
 
