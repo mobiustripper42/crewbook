@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.6] - 2026-06-01
+- PR #55: Phase 2.3 — shift review UI: list generated shifts by week, grouped by day (issue #47)
+
 ## [0.2.5] - 2026-06-01
 - PR #56: auto-sync downstream 2026-05-31
 
