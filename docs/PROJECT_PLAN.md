@@ -25,6 +25,7 @@ BrewBoat has an external API dependency Sailbook didn't — expect implementatio
 |-------|----------|--------|----------|---------|------------|-----------------|-------|
 | 0     | 5        | 17     | 13.88    | 2.31    | 2.97        | 0.31            | Single-boundary model (concurrent-PR session inflated review_time under DEC-015 method). 25% under the 0.40 baseline — Phase 0 was self-contained setup work; Phase 1+ external integrations will run higher. |
 | 1     | 3        | 28     | 24.00    | 4.17    | 1.83        | 0.21            | Per-PR window model (DEC-015). 9 PRs merged across 3 sessions; 6 actual hours of dev+review against 28 planned pts. Breaks dominated wall clock at 18h (Session 8 overnight). Session-logged points = 34 (vs 28 planned) — scope overruns absorbed into existing tasks rather than late-add issues. Half the 0.40 forecast; Xola integration was less spiky than expected. |
+| 2     | 2        | 24     | 99.59    | 5.41    | 0.92        | 0.26            | Per-PR window model (DEC-015). 6 PRs across 2 multi-day sessions; breaks dominated wall at 93.66h (PRs merged hours-to-days after open). 6.3 active hrs of dev+review against 24 planned. Session-logged = 26 (2.2 came in a 5, estimated 3). Slightly above Phase 1's 0.21 — UI + agent work is heavier than integration glue — still under the 0.40 baseline. The 2.5 eval harness surfaced a reproducible agent gap (#58). S11 reconciliation off 0.42h (break straddling a short review window). |
 
 ---
 
@@ -75,14 +76,14 @@ The brain — reservations go in, shifts come out.
 
 | ID | Task | Effort | Status | Notes |
 |----|------|--------|--------|-------|
-| 2.0 | Hand-author known-good shift fixture week (events + expected shifts) | 3 | [#50](https://github.com/mobiustripper42/crewbook/issues/50) | Surfaced by @pm in Phase 1 retro. Prereq for 2.1 — without it, prompt iteration is vibes (sandbox has zero orders for most sellers). Lands BEFORE 2.1; don't absorb. |
-| 2.1 | Shift generation agent: prompt design + structured JSON output | 5 | [#45](https://github.com/mobiustripper42/crewbook/issues/45) | System prompt with business rules, few-shot examples from sample data. THIS is the product. |
-| 2.2 | Reservation → shift pipeline (call agent, parse output, store) | 3 | [#46](https://github.com/mobiustripper42/crewbook/issues/46) | Orchestration: pull → agent → validate → persist |
-| 2.3 | Shift review UI: list generated shifts for a week | 5 | [#47](https://github.com/mobiustripper42/crewbook/issues/47) | Needs real UX — scannable, groupable by day. You'll verify this closely before pushing. |
-| 2.4 | Shift editing: admin can split/merge/delete shifts before posting | 5 | [#48](https://github.com/mobiustripper42/crewbook/issues/48) | Where "the agent got it wrong" gets fixed |
-| 2.5 | Validate agent output against 2025 data | 3 | [#49](https://github.com/mobiustripper42/crewbook/issues/49) | Run against known weeks, compare to reality. 2 years of actual data available. |
+| 2.0 | Hand-author known-good shift fixture week (events + expected shifts) | 3 | [x] 2026-05-29 | Done [PR #51](https://github.com/mobiustripper42/crewbook/pull/51) (issue #50). Landed on estimate. The deterministic grading target 2.1 needed. |
+| 2.1 | Shift generation agent: prompt design + structured JSON output | 5 | [x] 2026-05-30 | Done [PR #53](https://github.com/mobiustripper42/crewbook/pull/53) (issue #45). Agent worked first try; scored 100% on the 2.0 fixture. THIS is the product. |
+| 2.2 | Reservation → shift pipeline (call agent, parse output, store) | 3 | [x] 2026-05-31 | Done [PR #54](https://github.com/mobiustripper42/crewbook/pull/54) (issue #46). Came in a 5 (estimated 3) — added regenerate gate + scheduling_runs audit + the partial unique idempotency index. |
+| 2.3 | Shift review UI: list generated shifts for a week | 5 | [x] 2026-05-31 | Done [PR #55](https://github.com/mobiustripper42/crewbook/pull/55) (issue #47). Day-grouped board, week picker, empty state. |
+| 2.4 | Shift editing: admin can split/merge/delete shifts before posting | 5 | [x] 2026-05-31 | Done [PR #57](https://github.com/mobiustripper42/crewbook/pull/57) (issue #48). Delete + merge shipped; **split deferred** to a fast-follow. Flagged merge-vs-`ON DELETE CASCADE` + no-transaction race for @architect before Phase 3. |
+| 2.5 | Validate agent output against 2025 data | 3 | [x] 2026-06-01 | Done [PR #59](https://github.com/mobiustripper42/crewbook/pull/59) (issue #49). Multi-week eval harness + realistic synthetic 2025 weeks (real-data validation deferred to 6.4 — Xola reports can't emit boat id). Surfaced reproducible agent gap [#58](https://github.com/mobiustripper42/crewbook/issues/58) + cancellation-blindness. |
 
-**Phase 2 total: 24 pts** → ~9.6 hrs at 0.40 (was 21; +3 for 2.0 fixture week added at Phase-2-start per @pm Phase 1 retro)
+**Phase 2 total: 24 pts planned** → closed at 24/24 (100%); 26 session-logged (2.2 re-estimated 3→5). Actual: 6.3 active hrs (dev+review) at 0.26 hrs/pt — see velocity table.
 
 **Demo:** Pull a week of 2025 data → agent generates shifts → admin reviews shift list, recognizes the pattern matches reality.
 

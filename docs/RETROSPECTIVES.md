@@ -4,6 +4,79 @@ Written at each phase boundary by `/retro`. Newest at top.
 
 ---
 
+## Phase 2 — 2026-06-01
+
+**Sessions:** 2 (Sessions 10, 11)
+**Points:** 24 / 24 (100%) shipped against the plan · 26 session-logged (2.2 re-estimated 3→5)
+**Wall clock:** 99.59h
+**Dev time:** 5.41h
+**Review time:** 0.92h
+**Breaks:** 93.66h
+
+**Velocities (against 24 planned Phase 2 points, per-PR window model — DEC-015):**
+- Wall: 4.15 h/pt
+- Dev: 0.23 h/pt ← headline forecast
+- Review: 0.04 h/pt
+- Active (dev + review): 0.26 h/pt
+
+vs. the 0.40 PROJECT_PLAN baseline → ~35% faster. Slots between Phase 0 (0.31) and Phase 1 (0.21) — the curve is flattening into a trustworthy forecast. UI + agent work ran heavier than Phase 1's integration glue, as expected.
+
+**Issues:** 6 created (`phase:2`, #45–#50), 6 closed, 0 moved, 0 descoped. Two follow-ups filed (not Phase 2 scope): [#58](https://github.com/mobiustripper42/crewbook/issues/58) (agent gap-bridge) + cancellation-blindness (documented in fixtures README).
+
+### Per-session breakdown
+
+| Session | Date | Wall | Dev | Review | Breaks | Points (logged) | PRs |
+|---------|------|------|-----|--------|--------|-----------------|-----|
+| 10 | 2026-05-28 | 59.42h | 1.83h | 0.25h | 57.33h | 13 | #51 / #53 / #54 |
+| 11 | 2026-05-31 | 40.17h | 3.58h | 0.67h | 36.33h | 13 | #55 / #57 / #59 |
+| **Total** | | **99.59h** | **5.41h** | **0.92h** | **93.66h** | **26** | 6 PRs |
+
+Both sessions spanned multiple days; breaks dominated wall clock (PRs merged hours-to-days after open). Sanity (`dev + review + breaks ≈ wall`) held exactly for Session 10; Session 11 reconciled 0.42h over — a break straddling a short review window (attribute-by-start-timestamp artifact).
+
+### What worked
+
+*Inferred from session files — user opted to skip the verbatim Q&A.*
+
+- **Fixture-first paid off again.** 2.0 hand-authored the known-good week *before* 2.1 wrote a prompt; the agent scored 100% on first eval, no prompt-tuning loop. Two phases running on "settle the question before the keyboard."
+- **The 2.5 eval harness immediately earned its keep.** Three graded weeks found what one fixture hid: a reproducible (temp-0) rule-3 gap-bridge miss (#58) and the agent's cancellation-blindness. A 93% eval surfacing two real defects beats 2.1's single-fixture 100%.
+- **Honest re-estimate in real time.** 2.2 (3→5) was flagged mid-session, not buried — the schema migration + regenerate gate + audit columns + idempotency index is genuine 5-pt work.
+- **Honest 2.5 reshape.** Recognized the real 2025 manifest CSV can't validate a boat-keyed agent (no `resourceUsages`); deferred real-data validation to 6.4 and shipped synthetic-but-realistic weeks rather than faking it.
+- **Validation-driven fix.** The eval surfaced the agent running at temp 1.0 (non-deterministic); set `temperature: 0` for reproducible grading.
+
+### What didn't
+
+- **Phase 0.3 placeholder schema under-costed 2.2.** The shifts/scheduling_runs/assignments placeholder shapes weren't re-costed at Phase 2 planning, so the migration surprised the session mid-flight (3→5). Schema-shaped version of Phase 1's "aspirational docs outpace reality" theme.
+- **Deferral debt stacked onto Phase 3.** The 2.2 idempotency index forced 2.4's merge into delete-then-insert; combined with `assignments.shift_id ON DELETE CASCADE`, merge/delete is assignment-lossy the moment Phase 3 writes the first assignment. Plus the no-transaction merge race and the deferred split — all maturing on the same date.
+- **"2 years of real data" didn't survive contact.** The issue + CLAUDE.md assumed usable historical data; Xola's report builder can't emit boat id. Another aspirational-claim correction.
+- **Getting the export onto the dev box was friction.** Windows → Taildrop → sudo `tailscale file get`; several rounds before the file landed.
+
+### Changes for next phase
+
+- **@architect review is the FIRST thing in Phase 3** — a gate, not a nicety. No assignment-writing code (3.1) until the merge/delete-vs-`ON DELETE CASCADE` data-loss and the no-transaction merge race are resolved.
+- **Re-cost the remaining Phase 0.3 placeholder tables** (esp. `assignments`) before locking Phase 3 estimates — don't repeat the 2.2 mid-flight surprise.
+- **Plan Phase 3 at 0.30 h/pt**, not this phase's 0.26 — same external-agent surface plus live foreign-key consequences Phase 2 only deferred.
+- **Fix #58** (gap-bridge prompt + version bump) and **add `confirmed_count`** for cancellation-blindness; re-run the eval to 100%.
+- **Reuse the manifest CSV as Phase 3's validation input** — it has guides-per-slot, exactly what staff-assignment needs. The deferred liability flips to an asset across the boundary.
+
+### Scope changes
+
+- **2.4 split** deferred to a fast-follow (needed `xola_events` time re-derivation).
+- **2.5 real-data validation** deferred to Phase 6.4 (needs prod events API / `resourceUsages`).
+- **#58** (gap-bridge) + **cancellation-blindness** filed/documented as follow-ups, deliberately out of 2.5 scope.
+- No issues moved or descoped; all 6 closed in-phase.
+
+### PM read
+
+Phase 2 came in at 0.26 h/pt active against the 0.40 planning baseline — faster than the estimate, slower than Phase 1's 0.21, slotting right between Phase 0 (0.31) and Phase 1. That's the curve flattening into something I'd actually trust to forecast against. The Phase 1 retro warned not to extrapolate 0.21 into a prompt-design phase that "fails with subtly wrong JSON four times in a row while you tune the prompt." It didn't. The agent scored 100% on first eval. The reason isn't luck — it's that 2.0 built the hand-authored fixture week *before* 2.1 wrote a prompt, exactly as the last retro prescribed. That's two phases running where the discipline of settling the question before touching the keyboard produced the velocity, not the other way around. The pattern is load-bearing now; name it in DECISIONS if it isn't already.
+
+Scope was clean at the issue level — 6 created, 6 closed, 0 moved, 0 descoped — but the honest number is 26 logged against 24 planned, and the overrun lives entirely in 2.2 (estimated 3, shipped 5). That re-estimate was correct and the session file flagged it in real time rather than burying it: ALTERing the Phase 0.3 placeholder tables, the regenerate gate, the scheduling_runs audit columns, and the partial unique idempotency index is genuine 5-point work. The thing to flag is *why* it was a 3 — Phase 0.3 created shifts/scheduling_runs/assignments with placeholder shapes that nobody re-costed when Phase 2 was planned, so the migration surprised the session mid-flight. That's the same "docs accumulate aspirational claims faster than reality validates them" theme from Phase 1's 19-product-names correction, just wearing a schema this time. Worth a glance at the remaining Phase 0.3 placeholders before Phase 3 estimates get locked, because assignments is one of them and Phase 3 is the assignments phase.
+
+The pattern I'd actually circle: every deferral this phase compounds into Phase 3, and Phase 3 is precisely where they go live. The 2.2 idempotency index forced 2.4's merge into delete-then-insert. That delete-then-insert, combined with `assignments.shift_id ON DELETE CASCADE`, means merging or deleting a shift silently destroys its assignments — harmless today because none exist, lethal the moment the staff-assignment agent writes the first one. Add the no-transaction merge race and the deferred split, and you have a documented stack of data-safety debt all maturing on the same date. The @architect review before Phase 3 isn't a nicety; it's the gate. Do not let 3.1 write assignments against shifts whose edit operations are still assignment-lossy.
+
+On 2.5 — this is the part of the phase I most want to give the user credit for, because it's the least satisfying outcome and the right call. The real 2025 Xola export turned out to be a manifest CSV with no boat ids in `resourceUsages`, which means it physically cannot validate a boat-keyed shift agent. Shipping synthetic-but-realistic weeks and deferring real-data validation to 6.4 (when prod API read access exists) is the honest move; pretending the CSV could grade the agent would have been theater. And the harness immediately earned its keep — it caught a reproducible rule-3 gap-bridge miss (#58) and the agent's cancellation-blindness, both filed rather than papered over. A 93% eval that surfaces two real defects is worth more than the 100% that 2.1 reported against a single fixture. The agent "working first try" was always partly that there was only one graded week; three weeks found the cracks.
+
+Forward note for Phase 3: the manifest CSV that was useless for Phase 2 has guides-per-slot, which makes it the *right* validation input for staff assignment — the deferred real-data problem flips from liability to asset across the phase boundary. Sequence the @architect cascade/merge review as the first thing in the phase, before any assignment-writing code, and plan against 0.30 h/pt, not this phase's 0.26 — Phase 3 carries the same external-agent surface plus live foreign-key consequences that Phase 2 only got to defer. The bill comes due in 3.
+
 ## Phase 1 — 2026-05-27
 
 **Sessions:** 3 (Sessions 7, 8, 9)
