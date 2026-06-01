@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.5] - 2026-06-01
+- PR #56: auto-sync downstream 2026-05-31
+
 ## [0.2.4] - 2026-06-01
 - PR #54: Phase 2.2 — reservation → shift pipeline (issue #46)
 
