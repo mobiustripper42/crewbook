@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.2] - 2026-06-01
+- PR #52: auto-sync downstream — 2026-05-29
+
 ## [0.2.1] - 2026-06-01
 - PR #51: Phase 2.0 — synthetic known-good shift fixture week (issue #50)
 
