@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.4] - 2026-06-01
+- PR #54: Phase 2.2 — reservation → shift pipeline (issue #46)
+
 ## [0.2.3] - 2026-06-01
 - PR #53: Phase 2.1 — shift-generation agent: prompt + structured output (issue #45)
 
