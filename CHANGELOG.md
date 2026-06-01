@@ -1,4 +1,7 @@
 # Changelog
+## [0.2.1] - 2026-06-01
+- PR #51: Phase 2.0 — synthetic known-good shift fixture week (issue #50)
+
 ## [0.2.0] - 2026-05-27 — Phase 1
 - 28 pts shipped across 3 sessions (0.15 hrs/pt dev)
 - See `docs/RETROSPECTIVES.md` for the full retro
