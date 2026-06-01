@@ -43,11 +43,12 @@ function load<T>(name: string): T {
   return JSON.parse(readFileSync(join(FIXTURE_DIR, name), "utf8")) as T;
 }
 
-// Every week with both an input and an answer key.
-const slugs = [...new Set(readdirSync(FIXTURE_DIR))]
+// Every week with both an input and an answer key (single dir read).
+const fixtureFiles = new Set(readdirSync(FIXTURE_DIR));
+const slugs = [...fixtureFiles]
   .filter((f) => f.endsWith(".json") && !f.endsWith(".expected.json"))
   .map((f) => f.slice(0, -".json".length))
-  .filter((slug) => readdirSync(FIXTURE_DIR).includes(`${slug}.expected.json`))
+  .filter((slug) => fixtureFiles.has(`${slug}.expected.json`))
   .sort();
 
 const lookup = lookupFromEntries([["Brewboat Tour - captained", "brewboat"]]);

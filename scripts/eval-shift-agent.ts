@@ -65,7 +65,14 @@ function allSlugs(): string[] {
     .sort();
 }
 
-async function evalWeek(slug: string): Promise<{ slug: string; report: GradeReport }> {
+interface WeekResult {
+  slug: string;
+  report: GradeReport;
+  inputTokens: number;
+  outputTokens: number;
+}
+
+async function evalWeek(slug: string): Promise<WeekResult> {
   const week = JSON.parse(readFileSync(join(FIXTURE_DIR, `${slug}.json`), "utf8")) as WeekFixture;
   const expected = JSON.parse(
     readFileSync(join(FIXTURE_DIR, `${slug}.expected.json`), "utf8"),
@@ -79,12 +86,23 @@ async function evalWeek(slug: string): Promise<{ slug: string; report: GradeRepo
   const report = gradeShifts(result.shifts, expected.shifts);
 
   console.log(`   score ${(report.score * 100).toFixed(0)}%  (${report.matched}/${report.total} exact)`);
+  const u = result.usage;
+  if (u) {
+    console.log(
+      `   usage: input=${u.input_tokens} output=${u.output_tokens} cache_read=${u.cache_read_input_tokens ?? 0} cache_write=${u.cache_creation_input_tokens ?? 0}  (model=${result.model}, prompt=${result.promptVersion})`,
+    );
+  }
   if (report.mismatched.length) {
     for (const m of report.mismatched) console.log(`   ✗ ${m.key}\n       - ${m.diffs.join("\n       - ")}`);
   }
   if (report.missing.length) console.log(`   missing: ${report.missing.join(", ")}`);
   if (report.extra.length) console.log(`   extra:   ${report.extra.join(", ")}`);
-  return { slug, report };
+  return {
+    slug,
+    report,
+    inputTokens: u?.input_tokens ?? 0,
+    outputTokens: u?.output_tokens ?? 0,
+  };
 }
 
 async function main(): Promise<void> {
@@ -110,7 +128,10 @@ async function main(): Promise<void> {
   const aggregate = totalExpected === 0 ? 1 : totalMatched / totalExpected;
   const failed = results.filter((r) => r.report.score < 1);
 
+  const totalIn = results.reduce((n, r) => n + r.inputTokens, 0);
+  const totalOut = results.reduce((n, r) => n + r.outputTokens, 0);
   console.log(`\n══ Aggregate: ${(aggregate * 100).toFixed(0)}%  (${totalMatched}/${totalExpected} shifts exact across ${results.length} week(s))`);
+  console.log(`   tokens: input=${totalIn} output=${totalOut} across ${results.length} billed call(s)`);
   if (failed.length) {
     console.log(`FAIL — ${failed.length} week(s) below 100%: ${failed.map((r) => r.slug).join(", ")}. Tune the prompt and re-run.`);
     process.exit(1);
